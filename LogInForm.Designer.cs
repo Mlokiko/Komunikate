@@ -38,7 +38,7 @@
             // userNameLabel
             // 
             userNameLabel.AutoSize = true;
-            userNameLabel.Location = new Point(368, 234);
+            userNameLabel.Location = new Point(382, 233);
             userNameLabel.Name = "userNameLabel";
             userNameLabel.Size = new Size(112, 15);
             userNameLabel.TabIndex = 0;
@@ -47,7 +47,7 @@
             // passwordLabel
             // 
             passwordLabel.AutoSize = true;
-            passwordLabel.Location = new Point(442, 263);
+            passwordLabel.Location = new Point(456, 262);
             passwordLabel.Name = "passwordLabel";
             passwordLabel.Size = new Size(37, 15);
             passwordLabel.TabIndex = 1;
@@ -55,7 +55,7 @@
             // 
             // userNameText
             // 
-            userNameText.Location = new Point(486, 231);
+            userNameText.Location = new Point(500, 230);
             userNameText.Name = "userNameText";
             userNameText.Size = new Size(100, 23);
             userNameText.TabIndex = 2;
@@ -63,7 +63,7 @@
             // 
             // passwordText
             // 
-            passwordText.Location = new Point(486, 260);
+            passwordText.Location = new Point(500, 259);
             passwordText.Name = "passwordText";
             passwordText.Size = new Size(100, 23);
             passwordText.TabIndex = 3;
@@ -71,7 +71,7 @@
             // 
             // logInButton
             // 
-            logInButton.Location = new Point(511, 289);
+            logInButton.Location = new Point(525, 288);
             logInButton.Name = "logInButton";
             logInButton.Size = new Size(75, 23);
             logInButton.TabIndex = 4;
@@ -84,11 +84,11 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 541);
-            Controls.Add(logInButton);
-            Controls.Add(passwordText);
             Controls.Add(userNameText);
-            Controls.Add(passwordLabel);
+            Controls.Add(logInButton);
             Controls.Add(userNameLabel);
+            Controls.Add(passwordLabel);
+            Controls.Add(passwordText);
             Name = "LogInForm";
             Text = "Log In";
             ResumeLayout(false);

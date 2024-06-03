@@ -28,104 +28,105 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
-            textBox1 = new TextBox();
-            textBox2 = new TextBox();
-            label2 = new Label();
-            textBox3 = new TextBox();
-            label3 = new Label();
-            textBox4 = new TextBox();
-            label4 = new Label();
-            button1 = new Button();
+            userNameLabel = new Label();
+            userNameText = new TextBox();
+            passwordText = new TextBox();
+            passwordLabel = new Label();
+            nameText = new TextBox();
+            nameLabel = new Label();
+            surnameText = new TextBox();
+            surnameLabel = new Label();
+            confirmButton = new Button();
             SuspendLayout();
             // 
-            // label1
+            // userNameLabel
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(383, 204);
-            label1.Name = "label1";
-            label1.Size = new Size(111, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Nazwa użytkownika";
+            userNameLabel.AutoSize = true;
+            userNameLabel.Location = new Point(383, 204);
+            userNameLabel.Name = "userNameLabel";
+            userNameLabel.Size = new Size(111, 15);
+            userNameLabel.TabIndex = 0;
+            userNameLabel.Text = "Nazwa użytkownika";
             // 
-            // textBox1
+            // userNameText
             // 
-            textBox1.Location = new Point(500, 201);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(100, 23);
-            textBox1.TabIndex = 1;
+            userNameText.Location = new Point(500, 201);
+            userNameText.Name = "userNameText";
+            userNameText.Size = new Size(100, 23);
+            userNameText.TabIndex = 1;
             // 
-            // textBox2
+            // passwordText
             // 
-            textBox2.Location = new Point(500, 230);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(100, 23);
-            textBox2.TabIndex = 3;
+            passwordText.Location = new Point(500, 230);
+            passwordText.Name = "passwordText";
+            passwordText.Size = new Size(100, 23);
+            passwordText.TabIndex = 3;
             // 
-            // label2
+            // passwordLabel
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(457, 233);
-            label2.Name = "label2";
-            label2.Size = new Size(37, 15);
-            label2.TabIndex = 2;
-            label2.Text = "Hasło";
+            passwordLabel.AutoSize = true;
+            passwordLabel.Location = new Point(457, 233);
+            passwordLabel.Name = "passwordLabel";
+            passwordLabel.Size = new Size(37, 15);
+            passwordLabel.TabIndex = 2;
+            passwordLabel.Text = "Hasło";
             // 
-            // textBox3
+            // nameText
             // 
-            textBox3.Location = new Point(500, 259);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(100, 23);
-            textBox3.TabIndex = 5;
+            nameText.Location = new Point(500, 259);
+            nameText.Name = "nameText";
+            nameText.Size = new Size(100, 23);
+            nameText.TabIndex = 5;
             // 
-            // label3
+            // nameLabel
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(464, 262);
-            label3.Name = "label3";
-            label3.Size = new Size(30, 15);
-            label3.TabIndex = 4;
-            label3.Text = "Imię";
+            nameLabel.AutoSize = true;
+            nameLabel.Location = new Point(464, 262);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new Size(30, 15);
+            nameLabel.TabIndex = 4;
+            nameLabel.Text = "Imię";
             // 
-            // textBox4
+            // surnameText
             // 
-            textBox4.Location = new Point(500, 288);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(100, 23);
-            textBox4.TabIndex = 7;
+            surnameText.Location = new Point(500, 288);
+            surnameText.Name = "surnameText";
+            surnameText.Size = new Size(100, 23);
+            surnameText.TabIndex = 7;
             // 
-            // label4
+            // surnameLabel
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(437, 291);
-            label4.Name = "label4";
-            label4.Size = new Size(57, 15);
-            label4.TabIndex = 6;
-            label4.Text = "Nazwisko";
+            surnameLabel.AutoSize = true;
+            surnameLabel.Location = new Point(437, 291);
+            surnameLabel.Name = "surnameLabel";
+            surnameLabel.Size = new Size(57, 15);
+            surnameLabel.TabIndex = 6;
+            surnameLabel.Text = "Nazwisko";
             // 
-            // button1
+            // confirmButton
             // 
-            button1.Location = new Point(525, 317);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 8;
-            button1.Text = "Potwierdz";
-            button1.UseVisualStyleBackColor = true;
+            confirmButton.Location = new Point(525, 317);
+            confirmButton.Name = "confirmButton";
+            confirmButton.Size = new Size(75, 23);
+            confirmButton.TabIndex = 8;
+            confirmButton.Text = "Potwierdz";
+            confirmButton.UseVisualStyleBackColor = true;
+            confirmButton.Click += confirmButton_Click;
             // 
             // RegisterForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 541);
-            Controls.Add(button1);
-            Controls.Add(textBox4);
-            Controls.Add(label4);
-            Controls.Add(textBox3);
-            Controls.Add(label3);
-            Controls.Add(textBox2);
-            Controls.Add(label2);
-            Controls.Add(textBox1);
-            Controls.Add(label1);
+            Controls.Add(confirmButton);
+            Controls.Add(surnameText);
+            Controls.Add(surnameLabel);
+            Controls.Add(nameText);
+            Controls.Add(nameLabel);
+            Controls.Add(passwordText);
+            Controls.Add(passwordLabel);
+            Controls.Add(userNameText);
+            Controls.Add(userNameLabel);
             Name = "RegisterForm";
             Text = "Register";
             ResumeLayout(false);
@@ -134,14 +135,14 @@
 
         #endregion
 
-        private Label label1;
-        private TextBox textBox1;
-        private TextBox textBox2;
-        private Label label2;
-        private TextBox textBox3;
-        private Label label3;
-        private TextBox textBox4;
-        private Label label4;
-        private Button button1;
+        private Label userNameLabel;
+        private TextBox userNameText;
+        private TextBox passwordText;
+        private Label passwordLabel;
+        private TextBox nameText;
+        private Label nameLabel;
+        private TextBox surnameText;
+        private Label surnameLabel;
+        private Button confirmButton;
     }
 }

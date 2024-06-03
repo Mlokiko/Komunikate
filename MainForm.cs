@@ -88,7 +88,7 @@ namespace WinFormsTest3
 
         private void registerButton_Click(object sender, EventArgs e)
         {
-
+            OpenChildForm(new RegisterForm());
         }
     }
 }

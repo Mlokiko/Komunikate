@@ -131,7 +131,10 @@ namespace WinFormsTest3
                 return 3;
             }
         }
-
+        public static void Register(string userName, string password, string name, string surname)
+        {
+            
+        }
         // public static void ListConversationMessages() { }
 
     }

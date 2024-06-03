@@ -16,5 +16,10 @@ namespace WinFormsTest3
         {
             InitializeComponent();
         }
+
+        private void confirmButton_Click(object sender, EventArgs e)
+        {
+            DBconnection.Register(userNameText.Text, passwordText.Text, nameText.Text, surnameText.Text);
+        }
     }
 }
