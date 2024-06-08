@@ -39,6 +39,7 @@
             deleteAccountLabel = new Label();
             label1 = new Label();
             label2 = new Label();
+            label3 = new Label();
             SuspendLayout();
             // 
             // ipText
@@ -142,11 +143,21 @@
             label2.TabIndex = 25;
             label2.Text = "Gdy połączenie powiedzie się, w trakcie logowania użytkownik będzie logować się do wskazanego tutaj serwera";
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(220, 341);
+            label3.Name = "label3";
+            label3.Size = new Size(335, 15);
+            label3.TabIndex = 26;
+            label3.Text = "powiązanych z użytkownikiem który jest aktualnie zalogowany";
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(deleteAccountLabel);
@@ -176,5 +187,6 @@
         private Label deleteAccountLabel;
         private Label label1;
         private Label label2;
+        private Label label3;
     }
 }
