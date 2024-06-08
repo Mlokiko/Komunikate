@@ -107,6 +107,8 @@ GRANT SELECT ON View_Kapa_read_users TO Kapa;
 insert into friends(user_id, friend_id, status)
 values(1, 2, 'accepted');
 insert into friends(user_id, friend_id, status)
+values(1, 3, 'blocked');
+insert into friends(user_id, friend_id, status)
 values(1, 4, 'requested');
 
 -- przykładowe wiadomości
@@ -134,12 +136,13 @@ insert into messages(message_text_content, sender_id, receiver_id)
 values('Masz kase?', 5, 1);
 
 
--- trigger sprawdzający czy użytkownicy są znajomymi
--- sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość jest zrobione po stronie aplikacji
+-- Trigger sprawdzający czy użytkownicy są znajomymi
+-- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość jest zrobione po stronie aplikacji
 
-CREATE FUNCTION is_friend() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION is_friend() RETURNS trigger AS $$
 DECLARE
 v_status varchar;
+v_status_2 varchar;
 BEGIN
 
 SELECT status
@@ -147,19 +150,40 @@ INTO v_status
 FROM friends
 WHERE user_id = NEW.sender_id AND friend_id = NEW.receiver_id;
 
-IF(v_status IS NULL)  THEN    -- albo == '', ale musze sprawdzić
-RAISE EXCEPTION 'Nie jesteś znajomym użytkownika (%)', receiver;
-ELSEIF(v_status == 'requested') THEN
-RAISE EXCEPTION 'Użytkownik (%) nie dodał cię jeszcze do znajomych', receiver;
-ELSEIF(v_status == 'blocked') THEN
-RAISE EXCEPTION 'Użytkownik (%) zablokował cię', receiver;
+SELECT status
+INTO v_status_2
+FROM friends
+WHERE user_id = NEW.receiver_id AND friend_id = NEW.sender_id;
+
+IF(v_status IS NULL AND v_status_2 IS NULL)  THEN    -- albo == '', ale musze sprawdzić
+RAISE EXCEPTION 'Nie jesteś znajomym użytkownika';
+ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
+RAISE EXCEPTION 'Użytkownik nie dodał cię jeszcze do znajomych';
+ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
+RAISE EXCEPTION 'Użytkownik zablokował cię';
 END IF;
-RAISE NOTICE 'jesteście znajomymi';
+-- RAISE NOTICE 'jesteście znajomymi';			-- tylko do sprawdzenia czy funkcja działa
+RETURN NULL;
 END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER at_insert_message BEFORE INSERT OR UPDATE ON messages
+CREATE OR REPLACE TRIGGER at_insert_message_check_is_friends BEFORE INSERT OR UPDATE ON messages
 FOR EACH ROW EXECUTE PROCEDURE is_friend();
+
+-- Trigger sprawdzający czy wiadomość jest pusta
+
+CREATE OR REPLACE FUNCTION check_null() RETURNS trigger AS $$
+DECLARE
+BEGIN
+if (NEW.message_text_content = '' OR NEW.message_text_content IS NULL) THEN
+RAISE EXCEPTION 'Wiadomość nie może być pusta!';
+END IF;
+RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE TRIGGER at_insert_message_check_null BEFORE INSERT OR UPDATE ON messages
+FOR EACH ROW EXECUTE PROCEDURE check_null();
 
 
 
@@ -168,8 +192,10 @@ FOR EACH ROW EXECUTE PROCEDURE is_friend();
 -- DROP TABLE users CASCADE;
 -- DROP TABLE friends CASCADE;
 -- DROP TABLE messages CASCADE;
--- DROP TRIGGER at_insert_message on messages;
+-- DROP TRIGGER at_insert_message_check_is_friends on messages;
 -- DROP FUNCTION is_friend();
+-- DROP TRIGGER at_insert_message_check_null on messages;
+-- DROP FUNCTION check_null();
 
 
 
