@@ -148,13 +148,13 @@ FROM friends
 WHERE user_id = NEW.sender_id AND friend_id = NEW.receiver_id;
 
 IF(v_status IS NULL)  THEN    -- albo == '', ale musze sprawdzić
-EXCEPTION 'Nie jesteś znajomym użytkownika (%)', receiver;
-ELSE IF(v_status == 'requested')
-EXCEPTION "Użytkownik (%) nie dodał cię jeszcze do znajomych", receiver;
-ELSE IF(v_status == 'blocked')
-EXCEPTION "Użytkownik (%) zablokował cię", receiver;
+RAISE EXCEPTION 'Nie jesteś znajomym użytkownika (%)', receiver;
+ELSEIF(v_status == 'requested') THEN
+RAISE EXCEPTION 'Użytkownik (%) nie dodał cię jeszcze do znajomych', receiver;
+ELSEIF(v_status == 'blocked') THEN
+RAISE EXCEPTION 'Użytkownik (%) zablokował cię', receiver;
 END IF;
-RAICE NOTICE 'jesteście znajomymi';
+RAISE NOTICE 'jesteście znajomymi';
 END;
 $$ LANGUAGE PLPGSQL;
 
