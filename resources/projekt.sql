@@ -17,7 +17,7 @@ CREATE TABLE friends (
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (friend_id) REFERENCES users(user_id),
     CONSTRAINT status_check CHECK (status IN ('requested', 'accepted', 'blocked')),
-	CONSTRAINT self_friend CHECK (user_id <> friend_id)); --- Czy potrzebne?
+	CONSTRAINT self_friend CHECK (user_id <> friend_id));
 
 CREATE TABLE messages(
 	message_id SERIAL,
@@ -27,11 +27,13 @@ CREATE TABLE messages(
 	receiver_id INTEGER);
 
 
+-- Specjalni userzy pozwalają na czynności którymi są nazwani. Niestety dla usuwania użytkowników nie jestem w stanie znależć innego rozwiązania jak nadać mu prawa superusera
+
 -- Specjalny user w bazie danych, którym sprawdzane jest połączenie z bazą danych - nie wymaga żadnych specjalnych uprawnień
 
 CREATE USER testconnection PASSWORD 'testConnection';
 
--- Specjalny user w bazie danych, który usuwa użytkowników - rozdzielam te czynności na osobnych userów, aby zwiększyć kontrolę nad bazą danych.
+-- Specjalny user w bazie danych, który usuwa użytkowników
 
 CREATE USER userdeleater PASSWORD 'userDeleater' SUPERUSER;
 --GRANT USAGE ON SCHEMA public TO userdeleater;
@@ -42,7 +44,6 @@ CREATE USER userdeleater PASSWORD 'userDeleater' SUPERUSER;
 -- Specjalny user który będzie logować się do bazy danych i tworzyć nowych użytkowników
 -- Jeżeli schema jest inna niż public, trzeba zmodyfikować poniższe granty
 -- CREATEROLE pozwala tworzyć role (użytkowników bazy danych)
--- Chyba wystarczy tylko all privileges on all tables, albo i mniej, zobaczy sie
 
 CREATE USER usercreator PASSWORD 'userCreator' CREATEROLE;
 GRANT USAGE, CREATE ON SCHEMA public TO usercreator;
@@ -76,7 +77,6 @@ RAISE EXCEPTION 'Użytkownik nie dodał cię jeszcze do znajomych';
 ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
 RAISE EXCEPTION 'Użytkownik zablokował cię';
 END IF;
--- RAISE NOTICE 'jesteście znajomymi';			-- tylko do sprawdzenia czy funkcja działa
 RETURN NULL;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -100,7 +100,8 @@ CREATE OR REPLACE TRIGGER at_insert_message_check_null BEFORE INSERT OR UPDATE O
 FOR EACH ROW EXECUTE PROCEDURE check_null();
 
 
--- Przykładowe dane do bazy danych
+-- Przykładowe dane do bazy danych:
+-- Przykładowi użytkownicy:
 
 insert into users(username, password, name, surname)
 values('Andrju', 'password123', 'Andrzej', 'Deczko');
@@ -168,7 +169,7 @@ SELECT user_id, username from users;
 GRANT SELECT ON View_Kapa_list_messages TO Kapa;
 GRANT SELECT ON View_Kapa_read_users TO Kapa;
 
--- przykładowe relacje pomiędzy użytkownikami
+-- Przykładowe relacje pomiędzy użytkownikami:
 
 insert into friends(user_id, friend_id, status)
 values(1, 2, 'accepted');
@@ -182,7 +183,7 @@ insert into friends(user_id, friend_id, status)
 values(1, 4, 'requested');
 
 
--- przykładowe wiadomości
+-- Przykładowe wiadomości:
 
 insert into messages(message_text_content, sender_id, receiver_id)
 values('Piwo?', 1, 2);
