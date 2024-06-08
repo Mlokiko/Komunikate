@@ -47,6 +47,7 @@
             logInButton = new Button();
             writeMessagesButton = new Button();
             readMessagesButton = new Button();
+            friendsButton = new Button();
             panelTop.SuspendLayout();
             panelLogo.SuspendLayout();
             panelContent.SuspendLayout();
@@ -128,6 +129,7 @@
             // panelLeft
             // 
             panelLeft.BackColor = Color.FromArgb(44, 62, 80);
+            panelLeft.Controls.Add(friendsButton);
             panelLeft.Controls.Add(infoButton);
             panelLeft.Controls.Add(settingsButton);
             panelLeft.Controls.Add(registerButton);
@@ -318,6 +320,24 @@
             readMessagesButton.UseVisualStyleBackColor = false;
             readMessagesButton.Click += readMessagesButton_Click;
             // 
+            // friendsButton
+            // 
+            friendsButton.BackColor = Color.FromArgb(52, 73, 94);
+            friendsButton.BackgroundImageLayout = ImageLayout.None;
+            friendsButton.Dock = DockStyle.Top;
+            friendsButton.FlatAppearance.BorderSize = 0;
+            friendsButton.FlatStyle = FlatStyle.Flat;
+            friendsButton.ForeColor = Color.White;
+            friendsButton.ImageAlign = ContentAlignment.TopLeft;
+            friendsButton.Location = new Point(0, 350);
+            friendsButton.Margin = new Padding(0);
+            friendsButton.Name = "friendsButton";
+            friendsButton.Size = new Size(200, 50);
+            friendsButton.TabIndex = 17;
+            friendsButton.Text = "Friends";
+            friendsButton.UseVisualStyleBackColor = false;
+            friendsButton.Click += friendsButton_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -362,5 +382,6 @@
         private Button infoButton;
         private Button settingsButton;
         private Button registerButton;
+        private Button friendsButton;
     }
 }

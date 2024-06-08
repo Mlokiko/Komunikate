@@ -27,34 +27,24 @@ namespace WinFormsTest3
         private void readMessagesButton_Click(object sender, EventArgs e)
         {
             if (DBconnection.user_name == "")
-            {
                 MessageBox.Show("Najpierw zaloguj siê");
-            }
             else
-            {
                 OpenChildForm(new ReadMessagesForm());
-            }
         }
 
         private void writeMessagesButton_Click(object sender, EventArgs e)
         {
             if (DBconnection.user_name == "")
-            {
                 MessageBox.Show("Najpierw zaloguj siê");
-            }
             else
-            {
                 OpenChildForm(new WriteMessagesForm());
-            }
         }
 
         private void logoutButton_Click(object sender, EventArgs e)
         {
             // wstêpnie powinno dzia³aæ
             if (DBconnection.user_name == "")
-            {
                 MessageBox.Show("Nie jesteœ zalogowany");
-            }
             else
             {
                 DBconnection.user_name = "";
@@ -86,6 +76,14 @@ namespace WinFormsTest3
         private void registerButton_Click(object sender, EventArgs e)
         {
             OpenChildForm(new RegisterForm());
+        }
+
+        private void friendsButton_Click(object sender, EventArgs e)
+        {
+            if (DBconnection.user_name == "")
+                MessageBox.Show("Najpierw zaloguj siê");
+            else
+                OpenChildForm(new FriendsForm());
         }
     }
 }

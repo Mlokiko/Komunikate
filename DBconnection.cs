@@ -239,5 +239,28 @@ namespace WinFormsTest3
             }
             return true;
         }
+        /// <summary>
+        /// Funkcja zwraca 1 Gdy użytkownik jest znajomym, 2 gdy jest zablokowany, 3 gdy nim nie jest.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public static bool CheckFriendStatus(string userName)
+        {
+
+            return true;
+        }
+        public static bool AddFriend(string userName)
+        {
+            return true;
+        }
+        public static bool DeleteFriend(string userName)
+        {
+            return true;
+        }
+        public static bool BlockFriend(string userName)
+        {
+
+        return true;
+        }
     }
 }
