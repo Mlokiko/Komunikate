@@ -21,6 +21,13 @@ namespace WinFormsTest3
         public static string port = "5432";
         public static string database = "postgres";
 
+        /// <summary>
+        /// Funkcja sprawdza połączenie z bazą wskazaną przez parametry. Używa specjalnego użytkownika do tego. Po poprawnym wykonaniu zapisuje informacje o bazie do zmiennych statycznych tej biblioteki.
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="port"></param>
+        /// <param name="database"></param>
+        /// <returns></returns>
         public static bool CheckConnectionToDB(string server, string port, string database)
         {
             try
@@ -40,7 +47,12 @@ namespace WinFormsTest3
                 return false;
             }
         }
-
+        /// <summary>
+        /// Funkcja logująca usera. Loguje się do DB podanymi parametrami i odczytuje id użytkownika, zapisuje potem podane informacje i id w zmiennych statycznych tej biblioteki.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static bool LogIn(string userName, string password)
         {
             DBconnection.user_name_lower = userName.ToLower();
@@ -61,14 +73,18 @@ namespace WinFormsTest3
             }
             catch (Exception ex)
             {
-                // To można by jakoś zmienić, żeby tą biblioteke dało się używać z innym frameworkiem graficznym (WPF, MAUI, cos webowego) bez zmian w kodzie
-                // (chyba) Najlepiej by było zwracać wartości liczbowe typu 1 - ok, 2 - error, 3 - inny error
+                // To można by jakoś zmienić, żeby tą biblioteke dało się używać z innym frameworkiem UI (konsola, WPF, MAUI, cos webowego) bez zmian w kodzie
+                // (chyba) Najlepiej by było zwracać wartości liczbowe typu 1 - ok, 2 - error, 3 - inny error i obsługiwać je w kodzie programu, a nie tutaj
                 DBconnection.user_name_lower = "";
                 MessageBox.Show(ex.Message);
             }
             return false;
         }
-
+        /// <summary>
+        /// Funkcja pobierająca dane z DB - do ogarnięcia żeby lepiej działała (tzn, formatowanie)
+        /// </summary>
+        /// <param name="selectSql"></param>
+        /// <returns></returns>
         public static DataTable GetData(string selectSql)
         {
             //https://stackoverflow.com/questions/60670411/add-postgresql-databaseas-data-source-for-winforms-datagridview
@@ -90,13 +106,19 @@ namespace WinFormsTest3
             }
         }
 
-        // summary, trzeba napisac
-        // zwraca 1 gdy prawidłowo wykonano inserta
-        // zwraca 0 gdy nie ma w bazie danego użytkownika
-        // zwraca 2 gdy zawartość wiadomości jest pusta
+        /// <summary>
+        /// Funkcja wysyła wiadomość do innego użytkownika;
+        /// 
+        /// Funkcja zwraca:
+        /// 1 dla prawidłowo wykonanego inserta
+        /// 0 gdy nie ma w bazie danego użytkownika
+        /// 2 gdy zawartość wiadomości jest pusta
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="message_content"></param>
+        /// <returns></returns>
         public static int WriteMessage(string username, string message_content)
         {
-            
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
@@ -109,15 +131,12 @@ namespace WinFormsTest3
                     receiver_id = reader.GetInt32(0);
                 }
                 con.Close();
+
                 if (receiver_id == 0)
-                {
                     return 0;
-                }
-                else if (message_content == ""){
+                else if (message_content == "")
                     return 2;
-                }
-                //MessageBox.Show($"{receiver_id}");
-                //MessageBox.Show($"{DBconnection.user_id}");
+
                 con.Open();
                 using (var cmd2 = new NpgsqlCommand($"INSERT INTO messages(message_text_content, sender_id, receiver_id) VALUES('{message_content}', {DBconnection.user_id}, {receiver_id})", con))
                 {
@@ -132,6 +151,14 @@ namespace WinFormsTest3
                 return 3;
             }
         }
+        /// <summary>
+        /// Funkcja tworzy użytkownika w bazie danych (postgresowego), wpis w bazie na temat użytkownika oraz jego perpektywy i nadaje mu uprawnienia do nich. Zwraca true gdy uda się utworzyć usera false gdy nie.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <param name="name"></param>
+        /// <param name="surname"></param>
+        /// <returns></returns>
         public static bool Register(string userName, string password, string name, string surname)
         {
             int userID = 0;
@@ -176,13 +203,15 @@ namespace WinFormsTest3
             }
             return true;
         }
-
+        /// <summary>
+        /// Funkcja usuwa wpis w bazie danych, powiązania z użytkownikiem, oraz jego usera w DB. Zwraca true gdy uda się usunąć, false gdy nie.  
+        /// </summary>
+        /// <returns></returns>
         public static bool DeleteAccount()
         {
             if(DBconnection.user_id == 0)
-            {
-            return false;
-            }
+                return false;
+
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username=userdeleater;Password=userDeleater");
             var cmd = new NpgsqlCommand($"DELETE FROM users WHERE user_id = {DBconnection.user_id}", con);
             var cmd2 = new NpgsqlCommand($"DROP OWNED BY {DBconnection.user_name}", con);
@@ -210,7 +239,5 @@ namespace WinFormsTest3
             }
             return true;
         }
-        // public static void ListConversationMessages() { }
-
     }
 }

@@ -6,7 +6,6 @@ MNIEJ PILNE
 - Do zamiany wszedzie gdzie wpisywane jest haslo textbox na szyfrowan¹ wersje
 - ogarn¹æ ³adne wyœwietlanie wiadomoœci
 - ogarn¹c przechowywanie haszy hase³ u¿ytkowników, a nie w plain text
-- dodaæ usuwanie u¿ytkownika z bazy danych oraz jego wiadomoœci (szansa na u¿ycie ON DELETE CASCADE)
 
 JAK SIE UDA
 
@@ -34,7 +33,7 @@ potrzebuje stworzyc nowy formularz w którym bêd¹ opcje:
 - poka¿ nowe proœby o dodanie do znajomego
 
 
--- dodaæ transakcje - przed wpisywaniem/modyfikowaniem wiadomosci powinna baæ rozpoczynana nowa transakcja
+-- dodaæ transakcje - przed wpisywaniem/modyfikowaniem wiadomosci powinna byæ rozpoczynana nowa transakcja
 
 
 
