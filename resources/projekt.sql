@@ -76,7 +76,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE OR REPLACE TRIGGER at_insert_message_check_is_friends BEFORE INSERT OR UPDATE ON messages
 FOR EACH ROW EXECUTE PROCEDURE is_friend();
 
--- Trigger sprawdzający czy wiadomość jest pusta
+-- Trigger sprawdzający czy wiadomość jest pusta - taka sama funkcjonalność jest w kodzie C#, ale "przezorny zawsze ubezpieczony"
 
 CREATE OR REPLACE FUNCTION check_null() RETURNS trigger AS $$
 DECLARE

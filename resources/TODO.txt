@@ -1,8 +1,5 @@
 PILNE
 
-- Tworzenie u¿ytkowników 
-- Funkcje sk³adowane, triggery
-- dodaæ label z wymaganiami has³a do formularza register
 
 MNIEJ PILNE
 
@@ -49,3 +46,10 @@ dodatkowy formularz z group chat:
 - poka¿ czaty
 - usun sie z danego czatu
 - usun inn¹ osobe z czatu
+
+
+zamiast log IN, Log Out, Register zrobiæ przycisk User Account w którym bêdzie:
+- Log In
+- Log Out
+- Register
+- Delete account

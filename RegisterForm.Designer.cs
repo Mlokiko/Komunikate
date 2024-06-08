@@ -37,6 +37,7 @@
             surnameText = new TextBox();
             surnameLabel = new Label();
             confirmButton = new Button();
+            passwordRequirementLabel = new Label();
             SuspendLayout();
             // 
             // userNameLabel
@@ -113,11 +114,21 @@
             confirmButton.UseVisualStyleBackColor = true;
             confirmButton.Click += confirmButton_Click;
             // 
+            // passwordRequirementLabel
+            // 
+            passwordRequirementLabel.AutoSize = true;
+            passwordRequirementLabel.Location = new Point(606, 233);
+            passwordRequirementLabel.Name = "passwordRequirementLabel";
+            passwordRequirementLabel.Size = new Size(277, 15);
+            passwordRequirementLabel.TabIndex = 9;
+            passwordRequirementLabel.Text = "Hasło musi zawierać min 5 znaków, max 19 znaków";
+            // 
             // RegisterForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 541);
+            Controls.Add(passwordRequirementLabel);
             Controls.Add(confirmButton);
             Controls.Add(surnameText);
             Controls.Add(surnameLabel);
@@ -144,5 +155,6 @@
         private TextBox surnameText;
         private Label surnameLabel;
         private Button confirmButton;
+        private Label passwordRequirementLabel;
     }
 }
