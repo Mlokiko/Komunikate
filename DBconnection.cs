@@ -176,6 +176,40 @@ namespace WinFormsTest3
             }
             return true;
         }
+
+        public static bool DeleteAccount()
+        {
+            if(DBconnection.user_id == 0)
+            {
+            return false;
+            }
+            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username=userdeleater;Password=userDeleater");
+            var cmd = new NpgsqlCommand($"DELETE FROM users WHERE user_id = {DBconnection.user_id}", con);
+            var cmd2 = new NpgsqlCommand($"DROP OWNED BY {DBconnection.user_name}", con);
+            var cmd3 = new NpgsqlCommand($"DROP USER {DBconnection.user_name}", con);
+            try
+            {
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+                con.Open();
+                cmd2.ExecuteNonQuery();
+                con.Close();
+                con.Open();
+                cmd3.ExecuteNonQuery();
+                con.Close();
+                DBconnection.user_id = 0;
+                DBconnection.user_name = "";
+                DBconnection.user_name_lower = "";
+                DBconnection.user_password = "";
+            }
+            catch (Exception e) 
+            { 
+                MessageBox.Show(e.Message);
+                return false;
+            }
+            return true;
+        }
         // public static void ListConversationMessages() { }
 
     }

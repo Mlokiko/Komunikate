@@ -27,5 +27,17 @@ namespace WinFormsTest3
                 //Application.OpenForms.OfType<MainForm>().FirstOrDefault().OpenChildForm(new LogInForm());
             }
         }
+
+        private void deleteAccountButton_Click(object sender, EventArgs e)
+        {
+            if (DBconnection.user_id == 0)
+            {
+                MessageBox.Show("Musisz być zalogowany aby usunąć konto");
+            }
+            else if (DBconnection.DeleteAccount())
+            {
+                    MessageBox.Show("Pomyślnie usunięto konto");
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 -- database postgres, port 5432, dla poprawnego domyślnego działania aplikacji
+-- w projekcie nie użyto żadnych transakcji - nie ma sensownego zastosowania dla nich
 
 CREATE TABLE users (
 	user_id SERIAL PRIMARY KEY NOT NULL,
@@ -9,14 +10,14 @@ CREATE TABLE users (
 
 CREATE TABLE friends (
     user_id INT,
-    friend_id INT,
+    friend_id INT,--
     status VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, friend_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (friend_id) REFERENCES users(user_id),
-    CONSTRAINT status_check CHECK (status IN ('requested', 'accepted', 'blocked')));
-	--CONSTRAINT self_friend CHECK (user_id <> friend_id)); --- Czy potrzebne?
+    CONSTRAINT status_check CHECK (status IN ('requested', 'accepted', 'blocked')),
+	CONSTRAINT self_friend CHECK (user_id <> friend_id)); --- Czy potrzebne?
 
 CREATE TABLE messages(
 	message_id SERIAL,
@@ -30,6 +31,13 @@ CREATE TABLE messages(
 
 CREATE USER testconnection PASSWORD 'testConnection';
 
+-- Specjalny user w bazie danych, który usuwa użytkowników - rozdzielam te czynności na osobnych userów, aby zwiększyć kontrolę nad bazą danych.
+
+CREATE USER userdeleater PASSWORD 'userDeleater' SUPERUSER;
+--GRANT USAGE ON SCHEMA public TO userdeleater;
+--GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO userdeleater;
+--GRANT DELETE ON ALL TABLES IN SCHEMA public TO userdeleater;
+--GRANT DROP ON SCHEMA public TO userdeleater;
 
 -- Specjalny user który będzie logować się do bazy danych i tworzyć nowych użytkowników
 -- Jeżeli schema jest inna niż public, trzeba zmodyfikować poniższe granty
@@ -165,9 +173,14 @@ GRANT SELECT ON View_Kapa_read_users TO Kapa;
 insert into friends(user_id, friend_id, status)
 values(1, 2, 'accepted');
 insert into friends(user_id, friend_id, status)
+values(5, 6, 'accepted');
+insert into friends(user_id, friend_id, status)
+values(1, 5, 'accepted');
+insert into friends(user_id, friend_id, status)
 values(1, 3, 'blocked');
 insert into friends(user_id, friend_id, status)
 values(1, 4, 'requested');
+
 
 -- przykładowe wiadomości
 
@@ -200,14 +213,35 @@ values('Masz kase?', 5, 1);
 
 
 ---- USUWANIE BAZY DANYCH
+
+-- DELETE FROM users CASCADE;
 -- DROP TABLE users CASCADE;
+-- DELETE FROM friends CASCADE;
 -- DROP TABLE friends CASCADE;
+-- DELETE FROM messages;
 -- DROP TABLE messages CASCADE;
--- DROP TRIGGER at_insert_message_check_is_friends on messages;
+-- DROP TRIGGER at_insert_message_check_is_friends on messages;--
 -- DROP FUNCTION is_friend();
 -- DROP TRIGGER at_insert_message_check_null on messages;
 -- DROP FUNCTION check_null();
 
+-- REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM testconnection;
+-- REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM testconnection;
+-- REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM testconnection;
+-- REVOKE ALL ON SCHEMA public FROM testconnection;
+-- DROP USER testconnection;
+
+-- REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM usercreator;
+-- REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM usercreator;
+-- REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM usercreator;
+-- REVOKE ALL ON SCHEMA public FROM usercreator;
+-- DROP USER usercreator;
+
+-- REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM userdeleater;
+-- REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM userdeleater;
+-- REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM userdeleater;
+-- REVOKE ALL ON SCHEMA public FROM userdeleater;
+-- DROP USER userdeleater;
 
 
 ------------------------------------------

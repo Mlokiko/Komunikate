@@ -28,7 +28,7 @@ namespace WinFormsTest3
         {
             if (DBconnection.user_name == "")
             {
-                MessageBox.Show("Zaloguj siê najpierw");
+                MessageBox.Show("Najpierw zaloguj siê");
             }
             else
             {
@@ -40,19 +40,13 @@ namespace WinFormsTest3
         {
             if (DBconnection.user_name == "")
             {
-                MessageBox.Show("Zaloguj siê najpierw");
+                MessageBox.Show("Najpierw zaloguj siê");
             }
             else
             {
                 OpenChildForm(new WriteMessagesForm());
             }
         }
-
-        //private void logoutButton_Click(object sender, EventArgs e)
-        //{
-
-        //}
-
 
         private void logoutButton_Click(object sender, EventArgs e)
         {
@@ -64,6 +58,9 @@ namespace WinFormsTest3
             else
             {
                 DBconnection.user_name = "";
+                DBconnection.user_id = 0;
+                DBconnection.user_name_lower = "";
+                DBconnection.user_password = "";
                 currentUserText.Text = "Nie po³¹czono";
                 statusText.Text = "Nie po³¹czono";
                 MessageBox.Show("Wylogowano");

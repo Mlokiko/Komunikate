@@ -42,6 +42,8 @@
             databaseLabel = new Label();
             portLabel = new Label();
             portText = new TextBox();
+            deleteAccountButton = new Button();
+            deleteAccountLabel = new Label();
             SuspendLayout();
             // 
             // label1
@@ -111,7 +113,7 @@
             // 
             // ipText
             // 
-            ipText.Location = new Point(287, 166);
+            ipText.Location = new Point(73, 18);
             ipText.Name = "ipText";
             ipText.PlaceholderText = "127.0.0.1";
             ipText.Size = new Size(100, 23);
@@ -120,7 +122,7 @@
             // 
             // connectButton
             // 
-            connectButton.Location = new Point(274, 253);
+            connectButton.Location = new Point(60, 105);
             connectButton.Name = "connectButton";
             connectButton.Size = new Size(113, 23);
             connectButton.TabIndex = 15;
@@ -130,7 +132,7 @@
             // 
             // databaseText
             // 
-            databaseText.Location = new Point(287, 224);
+            databaseText.Location = new Point(73, 76);
             databaseText.Name = "databaseText";
             databaseText.PlaceholderText = "postgres";
             databaseText.Size = new Size(100, 23);
@@ -140,7 +142,7 @@
             // ipLabel
             // 
             ipLabel.AutoSize = true;
-            ipLabel.Location = new Point(224, 169);
+            ipLabel.Location = new Point(10, 21);
             ipLabel.Name = "ipLabel";
             ipLabel.Size = new Size(60, 15);
             ipLabel.TabIndex = 16;
@@ -149,7 +151,7 @@
             // databaseLabel
             // 
             databaseLabel.AutoSize = true;
-            databaseLabel.Location = new Point(227, 227);
+            databaseLabel.Location = new Point(13, 79);
             databaseLabel.Name = "databaseLabel";
             databaseLabel.Size = new Size(54, 15);
             databaseLabel.TabIndex = 20;
@@ -158,7 +160,7 @@
             // portLabel
             // 
             portLabel.AutoSize = true;
-            portLabel.Location = new Point(252, 198);
+            portLabel.Location = new Point(38, 50);
             portLabel.Name = "portLabel";
             portLabel.Size = new Size(29, 15);
             portLabel.TabIndex = 18;
@@ -166,18 +168,39 @@
             // 
             // portText
             // 
-            portText.Location = new Point(287, 195);
+            portText.Location = new Point(73, 47);
             portText.Name = "portText";
             portText.PlaceholderText = "5432";
             portText.Size = new Size(100, 23);
             portText.TabIndex = 19;
             portText.Text = "5432";
             // 
+            // deleteAccountButton
+            // 
+            deleteAccountButton.Location = new Point(115, 215);
+            deleteAccountButton.Name = "deleteAccountButton";
+            deleteAccountButton.Size = new Size(113, 23);
+            deleteAccountButton.TabIndex = 22;
+            deleteAccountButton.Text = "Usuń konto";
+            deleteAccountButton.UseVisualStyleBackColor = true;
+            deleteAccountButton.Click += deleteAccountButton_Click;
+            // 
+            // deleteAccountLabel
+            // 
+            deleteAccountLabel.AutoSize = true;
+            deleteAccountLabel.Location = new Point(13, 241);
+            deleteAccountLabel.Name = "deleteAccountLabel";
+            deleteAccountLabel.Size = new Size(331, 15);
+            deleteAccountLabel.TabIndex = 23;
+            deleteAccountLabel.Text = "Usunięcie konta spowoduje usunięcie wszystkich wiadomości";
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(deleteAccountLabel);
+            Controls.Add(deleteAccountButton);
             Controls.Add(ipText);
             Controls.Add(connectButton);
             Controls.Add(databaseText);
@@ -214,5 +237,7 @@
         private Label databaseLabel;
         private Label portLabel;
         private TextBox portText;
+        private Button deleteAccountButton;
+        private Label deleteAccountLabel;
     }
 }
