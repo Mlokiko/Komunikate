@@ -1,6 +1,6 @@
 -- database postgres, port 5432, dla poprawnego domyślnego działania aplikacji
 
-CREATE TABLE users(
+CREATE TABLE users (
 	user_id SERIAL PRIMARY KEY NOT NULL,
 	username VARCHAR(100) UNIQUE NOT NULL,
 	password VARCHAR(20) CONSTRAINT zle_haslo check(length(password) < 20 AND length(password) > 4),
@@ -26,23 +26,70 @@ CREATE TABLE messages(
 	receiver_id INTEGER);
 
 
-
--- Specjalny user w bazie danych, którym sprawdzane jest połączenie z bazą danych
+-- Specjalny user w bazie danych, którym sprawdzane jest połączenie z bazą danych - nie wymaga żadnych specjalnych uprawnień
 
 CREATE USER testconnection PASSWORD 'testConnection';
 
 
-
--- Specjalny użytkownik który będzie logować się do bazy danych i tworzyć nowych użytkowników
+-- Specjalny user który będzie logować się do bazy danych i tworzyć nowych użytkowników
+-- Jeżeli schema jest inna niż public, trzeba zmodyfikować poniższe granty
 -- CREATEROLE pozwala tworzyć role (użytkowników bazy danych)
-CREATE USER usercreator PASSWORD 'userCreator' CREATEROLE;
-
-
 -- Chyba wystarczy tylko all privileges on all tables, albo i mniej, zobaczy sie
-GRANT USAGE ON SCHEMA public TO usercreator;
+
+CREATE USER usercreator PASSWORD 'userCreator' CREATEROLE;
+GRANT USAGE, CREATE ON SCHEMA public TO usercreator;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO usercreator;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO usercreator;
--- można użyć grant CREATEROLE... trzeba przetestować
+
+
+-- Trigger sprawdzający czy użytkownicy są znajomymi
+-- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość, jest zrobione po stronie aplikacji
+
+CREATE OR REPLACE FUNCTION is_friend() RETURNS trigger AS $$
+DECLARE
+v_status varchar;
+v_status_2 varchar;
+BEGIN
+
+SELECT status
+INTO v_status
+FROM friends
+WHERE user_id = NEW.sender_id AND friend_id = NEW.receiver_id;
+
+SELECT status
+INTO v_status_2
+FROM friends
+WHERE user_id = NEW.receiver_id AND friend_id = NEW.sender_id;
+
+IF(v_status IS NULL AND v_status_2 IS NULL)  THEN
+RAISE EXCEPTION 'Nie jesteś znajomym użytkownika';
+ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
+RAISE EXCEPTION 'Użytkownik nie dodał cię jeszcze do znajomych';
+ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
+RAISE EXCEPTION 'Użytkownik zablokował cię';
+END IF;
+-- RAISE NOTICE 'jesteście znajomymi';			-- tylko do sprawdzenia czy funkcja działa
+RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE TRIGGER at_insert_message_check_is_friends BEFORE INSERT OR UPDATE ON messages
+FOR EACH ROW EXECUTE PROCEDURE is_friend();
+
+-- Trigger sprawdzający czy wiadomość jest pusta
+
+CREATE OR REPLACE FUNCTION check_null() RETURNS trigger AS $$
+DECLARE
+BEGIN
+if (NEW.message_text_content = '' OR NEW.message_text_content IS NULL) THEN
+RAISE EXCEPTION 'Wiadomość nie może być pusta!';
+END IF;
+RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE TRIGGER at_insert_message_check_null BEFORE INSERT OR UPDATE ON messages
+FOR EACH ROW EXECUTE PROCEDURE check_null();
 
 
 -- Przykładowe dane do bazy danych
@@ -147,54 +194,7 @@ insert into messages(message_text_content, sender_id, receiver_id)
 values('Masz kase?', 5, 1);
 
 
--- Trigger sprawdzający czy użytkownicy są znajomymi
--- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość, jest zrobione po stronie aplikacji
 
-CREATE OR REPLACE FUNCTION is_friend() RETURNS trigger AS $$
-DECLARE
-v_status varchar;
-v_status_2 varchar;
-BEGIN
-
-SELECT status
-INTO v_status
-FROM friends
-WHERE user_id = NEW.sender_id AND friend_id = NEW.receiver_id;
-
-SELECT status
-INTO v_status_2
-FROM friends
-WHERE user_id = NEW.receiver_id AND friend_id = NEW.sender_id;
-
-IF(v_status IS NULL AND v_status_2 IS NULL)  THEN    -- albo == '', ale musze sprawdzić
-RAISE EXCEPTION 'Nie jesteś znajomym użytkownika';
-ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
-RAISE EXCEPTION 'Użytkownik nie dodał cię jeszcze do znajomych';
-ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
-RAISE EXCEPTION 'Użytkownik zablokował cię';
-END IF;
--- RAISE NOTICE 'jesteście znajomymi';			-- tylko do sprawdzenia czy funkcja działa
-RETURN NULL;
-END;
-$$ LANGUAGE PLPGSQL;
-
-CREATE OR REPLACE TRIGGER at_insert_message_check_is_friends BEFORE INSERT OR UPDATE ON messages
-FOR EACH ROW EXECUTE PROCEDURE is_friend();
-
--- Trigger sprawdzający czy wiadomość jest pusta
-
-CREATE OR REPLACE FUNCTION check_null() RETURNS trigger AS $$
-DECLARE
-BEGIN
-if (NEW.message_text_content = '' OR NEW.message_text_content IS NULL) THEN
-RAISE EXCEPTION 'Wiadomość nie może być pusta!';
-END IF;
-RETURN NULL;
-END;
-$$ LANGUAGE PLPGSQL;
-
-CREATE OR REPLACE TRIGGER at_insert_message_check_null BEFORE INSERT OR UPDATE ON messages
-FOR EACH ROW EXECUTE PROCEDURE check_null();
 
 
 
@@ -254,7 +254,7 @@ FOR EACH ROW EXECUTE PROCEDURE check_null();
 -- RAICE NOTICE 'jesteście znajomymi';
 -- END $$;
 
-
+------------------------------------------
 
 -- GRANT CONNECT ON DATABASE my_database TO my_user; teoretycznie to powinno pomóc, ale nic nie daje...
 -- dobra, wiadomość dla mnie, userzy w postgresie ZAWSZE są z małej litery...
@@ -288,27 +288,8 @@ FOR EACH ROW EXECUTE PROCEDURE check_null();
 -- GRANT SELECT ON View_{username}_read_users TO {username};
 
 
-
---create user Andrju Password 'password123';
---create user Mateo password 'Grucha142';
---create user Filipo password '232gamaciko';
---create user Greg password 'maslo232';
---create user Orion password 'husaria192';
---create user Kapa password 'xxxBbBxxx0';
-
 ---------------------------------------
 -- CREATE TABLE groups(
 -- 	id SERIAL,
 -- 	group_name TEXT,
 -- 	group_users INTEGER);
-
--- create table message_text();
-
--- create table message_video();
-
--- create table message_sound();
-
--- Uprawnienia użytkownika loginuser (TRAKTUJE GO JUZ JAKO ADMINA, MA DOSTEP DO WSZYSTKIEGO)
--- Ogólnie to praktycznie nic nie zmienia...
--- GRANT USAGE ON SCHEMA PUBLIC TO loginuser;
--- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO loginuser;
