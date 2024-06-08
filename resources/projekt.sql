@@ -25,13 +25,24 @@ CREATE TABLE messages(
 	sender_id INTEGER,
 	receiver_id INTEGER);
 
+
+
 -- Specjalny user w bazie danych, którym sprawdzane jest połączenie z bazą danych
 
 CREATE USER testconnection PASSWORD 'testConnection';
 
--- Specjalny użytkownik który będzie logować się do bazy danych i tworzyć nowych użytkowników
 
-CREATE USER usercreator PASSWORD 'userCreator';
+
+-- Specjalny użytkownik który będzie logować się do bazy danych i tworzyć nowych użytkowników
+-- CREATEROLE pozwala tworzyć role (użytkowników bazy danych)
+CREATE USER usercreator PASSWORD 'userCreator' CREATEROLE;
+
+
+-- Chyba wystarczy tylko all privileges on all tables, albo i mniej, zobaczy sie
+GRANT USAGE ON SCHEMA public TO usercreator;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO usercreator;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO usercreator;
+-- można użyć grant CREATEROLE... trzeba przetestować
 
 
 -- Przykładowe dane do bazy danych
@@ -137,7 +148,7 @@ values('Masz kase?', 5, 1);
 
 
 -- Trigger sprawdzający czy użytkownicy są znajomymi
--- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość jest zrobione po stronie aplikacji
+-- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość, jest zrobione po stronie aplikacji
 
 CREATE OR REPLACE FUNCTION is_friend() RETURNS trigger AS $$
 DECLARE
@@ -301,36 +312,3 @@ FOR EACH ROW EXECUTE PROCEDURE check_null();
 -- Ogólnie to praktycznie nic nie zmienia...
 -- GRANT USAGE ON SCHEMA PUBLIC TO loginuser;
 -- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO loginuser;
-
--- Użytkownik z którego będą korzystać użytkownicy aplikacji
-
--- create user LogInUser password 'LogInUser123';
-
--- create view LogInView on users as
--- select username, password
--- from users;
-
-
--- Wyzwalacze, funkcje pozwalające na pracę aplikacji/DB - wysylanie wiadomosci od prawidlowego uzytkownika do prawidlowego odbiorcy itp.
-
-
-
-
--- zamysł aplikacji: WPF lub coś podobnego, po uruchomieniu aplikacji,
--- wyświetlane jest logo aplikacji oraz 2 przyciski - zaloguj się,
--- oraz zarejestruj. Rejestracja prosi o nickname (sprawdzane jest czy 
--- jest dostępny) imię użytkownika, nazwisko, hasło (4-20 znaków, min 1 duży znak,
--- znak specjalny i liczba). Jeżeli poprawne dane, tworzony jest użytkownik i aplikacja
--- wraca do menu log/rejestr.
-
--- po zalogowaniu się (ofc sprawdzanie czy dane są prawidłowe) przenosi do ekranu na którym wyświetlane są
--- ostatnie wiadomości grupowe i prywatne (w osobnych kolumnach). Widoczny na dolnym pasku jest przycisk napisz wiadomość, wyjdz
--- z programu, lista znajomych, dodaj znajomego. Po wcisnieciu "napisz wiadomość" okno wyboru czy prywatna (do kogo) czy grupowa (jak grupa) oraz
--- pole gdzie można wpisać wiadomość.
-
--- lista znajomych wyświetla jakich znajomych posiada użytkownik.
--- dodaj znajomego wyświetla pole w którym można dodać znajomego (wpisać jego nickname) - doda się do listy znajomych
-
-
--- bardzije skomplikowaną opcją byłoby stworzenie opcji wyboru bazy/serwera (można by skorzystać z hostowanej 
--- online bazy).

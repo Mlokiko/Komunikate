@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Npgsql;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
@@ -92,7 +93,7 @@ namespace WinFormsTest3
         // summary, trzeba napisac
         // zwraca 1 gdy prawidłowo wykonano inserta
         // zwraca 0 gdy nie ma w bazie danego użytkownika
-        // zwraca 2 gdy 
+        // zwraca 2 gdy zawartość wiadomości jest pusta
         public static int WriteMessage(string username, string message_content)
         {
             
@@ -131,9 +132,49 @@ namespace WinFormsTest3
                 return 3;
             }
         }
-        public static void Register(string userName, string password, string name, string surname)
+        public static bool Register(string userName, string password, string name, string surname)
         {
-            
+            int userID = 0;
+            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username=usercreator;Password=userCreator");
+            con.Open();
+            var create_user = new NpgsqlCommand($"INSERT INTO USERS(username, password, name, surname) VALUES('{userName}', '{password}', '{name}', '{surname}')", con);
+            var check_id = new NpgsqlCommand($"SELECT user_id FROM users WHERE username = '{userName}'", con);
+            var create_database_user = new NpgsqlCommand($"CREATE USER {userName} PASSWORD '{password}'", con);
+            var create_view_list_messages = new NpgsqlCommand($"CREATE VIEW view_{userName}_list_messages AS SELECT * FROM messages WHERE sender_id = {userID} OR receiver_id = {userID}", con);
+            var create_view_read_users = new NpgsqlCommand($"CREATE VIEW view_{userName}_read_users AS SELECT user_id, username from users", con);
+            var create_grant_on_list_messages = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_list_messages TO {userName}", con);
+            var create_grant_on_read_users = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_read_users TO {userName}", con);
+            try
+            {
+                create_user.ExecuteNonQuery();
+                NpgsqlDataReader reader = check_id.ExecuteReader();     
+                while (reader.Read())                                       // Ten kawałek kodu można by pewnie wykonać inaczej (lepiej)
+                {
+                    userID = reader.GetInt32(0);
+                }                                                           // Te otwieranie teoretycznie też można by zmienić
+                con.Close();
+                con.Open();
+                create_database_user.ExecuteNonQuery();
+                con.Close();
+                con.Open();
+                create_view_list_messages.ExecuteNonQuery();
+                con.Close();
+                con.Open();
+                create_view_read_users.ExecuteNonQuery();
+                con.Close();
+                con.Open();
+                create_grant_on_list_messages.ExecuteNonQuery();
+                con.Close();
+                con.Open();
+                create_grant_on_read_users.ExecuteNonQuery();
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+            return true;
         }
         // public static void ListConversationMessages() { }
 

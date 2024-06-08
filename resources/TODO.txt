@@ -2,12 +2,14 @@ PILNE
 
 - Tworzenie u¿ytkowników 
 - Funkcje sk³adowane, triggery
+- dodaæ label z wymaganiami has³a do formularza register
 
 MNIEJ PILNE
 
 - Do zamiany wszedzie gdzie wpisywane jest haslo textbox na szyfrowan¹ wersje
 - ogarn¹æ ³adne wyœwietlanie wiadomoœci
 - ogarn¹c przechowywanie haszy hase³ u¿ytkowników, a nie w plain text
+- dodaæ usuwanie u¿ytkownika z bazy danych oraz jego wiadomoœci (szansa na u¿ycie ON DELETE CASCADE)
 
 JAK SIE UDA
 

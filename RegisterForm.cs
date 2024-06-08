@@ -19,7 +19,14 @@ namespace WinFormsTest3
 
         private void confirmButton_Click(object sender, EventArgs e)
         {
-            DBconnection.Register(userNameText.Text, passwordText.Text, nameText.Text, surnameText.Text);
+            if(DBconnection.Register(userNameText.Text, passwordText.Text, nameText.Text, surnameText.Text))
+            {
+                MessageBox.Show("Pomyślnie utworzono użytkownika");
+            }
+            else
+            {
+                MessageBox.Show("Nie utworzono użytkownika");
+            }
         }
     }
 }
