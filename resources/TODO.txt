@@ -1,10 +1,19 @@
+PILNE
+
+- Tworzenie u¿ytkowników 
+- Funkcje sk³adowane, triggery
+
+MNIEJ PILNE
+
 - Do zamiany wszedzie gdzie wpisywane jest haslo textbox na szyfrowan¹ wersje
-- ogarn¹æ DB - ka¿dy user aplikacji ma wlasnego usera w DB i nim siê ³¹czy
-- ogarn¹æ ³adne wyœwietlanie wiadomoœci 
-- ogarn¹æ czaty grupowe
-- ogarn¹æ wysylanie wiadomoœci z obrazami/muzyk¹?
+- ogarn¹æ ³adne wyœwietlanie wiadomoœci
+- ogarn¹c przechowywanie haszy hase³ u¿ytkowników, a nie w plain text
+
+JAK SIE UDA
+
 - ogarn¹æ ikony - prawid³owy rozmiar, u³o¿enie
 - ogarn¹æ UI:
+  
   - przemieszczanie siê elementów przy zmianie rozmiarów okna
   - prawid³owe min rozmiar okna
   - kolorowe przyciski, inaczej wygladajace pola tekstowe - zeby bylo modern, a nie windows ME style
@@ -13,15 +22,28 @@
   - jêzyk - albo wszystko po angielsku, albo po polsku
   - opcja zmiany jêzyka na ang/pol w ca³ej aplikacji?
   
-  
-- na pewno do poprawy bêd¹ metody loguj¹ce do bazy danych - niepotrzebny loop, zmienne itp.
 - przy wprowadzaniu gdziekolwiek loginu/has³a/jakichkolwiek danych, dodaæ opcjê przechodzenia dalej enterem
-
-- ogarn¹c przechowywanie haszy hase³ u¿ytkowników, a nie w plain text
-
 - pododawaæ progres bar (np. przy logowaniu. wczytywaniu wiadomoœci) - count(wiadomosci) jako max, progresBar++ przy wczytywaniu z bazy danych
 - dodaæ opcjê odczytywania wiadomoœci z danego przedzia³u czasowego
-
 - dodaæ czyszczenie pól (username haslo) gdy nie uda siê logowanie itp.
 
-- FUNKCJE SK£ADOWANE DO PISANIA WIADOMOŒCI (bo na razie planuje zrobiæ to przez kod w C#, ale to w koñcu przedmio "bazy danych" a nie "programowanie"
+
+potrzebuje stworzyc nowy formularz w którym bêd¹ opcje:
+- poka¿ status znajomych (czy znajomi, czy zablokowani)
+- dodaj znajomych (wysylanie requesta o dodanie do znajomych)
+- zablokuj/usun znajomego
+- poka¿ nowe proœby o dodanie do znajomego
+
+
+-- dodaæ transakcje - przed wpisywaniem/modyfikowaniem wiadomosci powinna baæ rozpoczynana nowa transakcja
+
+
+
+- ogarn¹æ czaty grupowe
+- ogarn¹æ wysylanie wiadomoœci z obrazami/muzyk¹?
+
+
+dodatkowy formularz z group chat:
+- poka¿ czaty
+- usun sie z danego czatu
+- usun inn¹ osobe z czatu

@@ -1,6 +1,4 @@
 -- database postgres, port 5432, dla poprawnego domyślnego działania aplikacji
--- poniższe to podstawy programu - tylko wiadomości prywatne, grupy na razie wciąż nie ogarnięte
--- tabela friends mimo że istnieje nie jest wykorzystywana
 
 CREATE TABLE users(
 	user_id SERIAL PRIMARY KEY NOT NULL,
@@ -27,14 +25,16 @@ CREATE TABLE messages(
 	sender_id INTEGER,
 	receiver_id INTEGER);
 
+-- Specjalny user w bazie danych, którym sprawdzane jest połączenie z bazą danych
+
+CREATE USER testconnection PASSWORD 'testConnection';
+
+-- Specjalny użytkownik który będzie logować się do bazy danych i tworzyć nowych użytkowników
+
+CREATE USER usercreator PASSWORD 'userCreator';
+
+
 -- Przykładowe dane do bazy danych
-
--- GRANT CONNECT ON DATABASE my_database TO my_user; teoretycznie to powinno pomóc, ale nic nie daje...
--- dobra, wiadomość dla mnie, userzy w postgresie ZAWSZE są z małej litery...
-
--- te uprawnienia na dole są potrzebne żeby można było wysyłać wiadomości
--- GRANT INSERT ON messages TO {user}; ORAZ
--- GRANT UPDATE ON messages_message_id_seq to {user};
 
 insert into users(username, password, name, surname)
 values('Andrju', 'password123', 'Andrzej', 'Deczko');
@@ -102,7 +102,7 @@ SELECT user_id, username from users;
 GRANT SELECT ON View_Kapa_list_messages TO Kapa;
 GRANT SELECT ON View_Kapa_read_users TO Kapa;
 
--- przykładowe relacje pomiędzy użytkownikami (na razie nie wykorzystywane w jakikolwiek sposób)
+-- przykładowe relacje pomiędzy użytkownikami
 
 insert into friends(user_id, friend_id, status)
 values(1, 2, 'accepted');
@@ -133,12 +133,98 @@ values('Coś sie stało?', 6, 5);
 insert into messages(message_text_content, sender_id, receiver_id)
 values('Masz kase?', 5, 1);
 
----- USUWANIE TABEL
+
+-- trigger sprawdzający czy użytkownicy są znajomymi
+-- sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość jest zrobione po stronie aplikacji
+
+CREATE FUNCTION is_friend() RETURNS trigger AS $$
+DECLARE
+v_status varchar;
+BEGIN
+
+SELECT status
+INTO v_status
+FROM friends
+WHERE user_id = NEW.sender_id AND friend_id = NEW.receiver_id;
+
+IF(v_status IS NULL)  THEN    -- albo == '', ale musze sprawdzić
+EXCEPTION 'Nie jesteś znajomym użytkownika (%)', receiver;
+ELSE IF(v_status == 'requested')
+EXCEPTION "Użytkownik (%) nie dodał cię jeszcze do znajomych", receiver;
+ELSE IF(v_status == 'blocked')
+EXCEPTION "Użytkownik (%) zablokował cię", receiver;
+END IF;
+RAICE NOTICE 'jesteście znajomymi';
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER at_insert_message BEFORE INSERT OR UPDATE ON messages
+FOR EACH ROW EXECUTE PROCEDURE is_friend();
+
+
+
+
+---- USUWANIE BAZY DANYCH
 -- DROP TABLE users CASCADE;
 -- DROP TABLE friends CASCADE;
 -- DROP TABLE messages CASCADE;
+-- DROP TRIGGER at_insert_message on messages;
+-- DROP FUNCTION is_friend();
 
 
+
+------------------------------------------
+
+-- Moje stare podejście do tematu - zapomniałem że NEW w funkcji triggera jest typem rekordowym. Może można to wykorzystać do czegoś innego, ale nie sprawdzałem czy działa
+
+-- CREATE FUNCTION username_to_id(v_username varchar) RETURNS INTEGER PLPGSQL as $$
+-- DECLARE
+-- v_id integer;
+-- BEGIN
+
+-- SELECT user_id 
+-- INTO v_id
+-- FROM users
+-- WHERE username = v_username;
+
+-- IF NOT FOUND THEN
+-- 	RAISE NOTICE 'Nie znaleziono id użytkownika o nazwie: (%)', v_username;
+-- END IF;
+
+-- return v_id;
+-- END $$;
+
+-- CREATE FUNCTION is_friend(v_sender_id INTEGER, v_receiver VARCHAR) LANGUAGE PLPGSQL AS $$
+-- DECLARE
+-- v_receiver_id integer;
+-- v_status varchar;
+-- BEGIN
+
+-- v_receiver_id = CALL username_to_id(v_receiver);
+
+-- SELECT status
+-- INTO v_status
+-- FROM friends
+-- WHERE user_id = v_sender_id AND friend_id = v_receiver_id;
+
+-- IF(v_status IS NULL)      -- albo == '', ale musze sprawdzić
+-- EXCEPTION 'Nie jesteś znajomym użytkownika (%)', receiver;
+-- ELSE IF(v_status == 'requested')
+-- EXCEPTION "Użytkownik (%) nie dodał cię jeszcze do znajomych", receiver;
+-- ELSE IF(v_status == 'blocked')
+-- EXCEPTION "Użytkownik (%) zablokował cię", receiver;
+-- END IF;
+-- RAICE NOTICE 'jesteście znajomymi';
+-- END $$;
+
+
+
+-- GRANT CONNECT ON DATABASE my_database TO my_user; teoretycznie to powinno pomóc, ale nic nie daje...
+-- dobra, wiadomość dla mnie, userzy w postgresie ZAWSZE są z małej litery...
+
+-- te uprawnienia na dole są potrzebne żeby można było wysyłać wiadomości
+-- GRANT INSERT ON messages TO {user}; ORAZ
+-- GRANT UPDATE ON messages_message_id_seq to {user};
 
 -- -- Proces tworzenia usera w bazie danych i aplikacji.
 -- -- Nazwę usera zapisujemy do zmiennej {username} w C#, tak samo hasło i potem tym zapytaniem przekazujemy do DBMS.
@@ -198,7 +284,6 @@ values('Masz kase?', 5, 1);
 -- select username, password
 -- from users;
 
--- create user testConnection PASSWORD 'testConnection';
 
 -- Wyzwalacze, funkcje pozwalające na pracę aplikacji/DB - wysylanie wiadomosci od prawidlowego uzytkownika do prawidlowego odbiorcy itp.
 
