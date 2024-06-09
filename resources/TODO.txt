@@ -1,11 +1,16 @@
 PILNE
 
+- FRIENDS - Aktualnie sprawdzane jest czy którykolwiek z userów ma status znajomego/zablokowanego, je¿eli tak to obydwoje maj¹ ten status. request friend nie dziala/robi nic
 
 MNIEJ PILNE
 
 - Do zamiany wszedzie gdzie wpisywane jest haslo textbox na szyfrowan¹ wersje
 - ogarn¹æ ³adne wyœwietlanie wiadomoœci
 - ogarn¹c przechowywanie haszy hase³ u¿ytkowników, a nie w plain text
+
+Do poprawy
+
+- U¿ytkownicy (w sensie w bazie danych, a nie zapisanych w tabelach) mogliby rozpoczynaæ siê na np. user_NAZWA, mog³o by to pomóc przy ich usuwaniu
 
 JAK SIE UDA
 

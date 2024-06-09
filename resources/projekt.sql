@@ -77,7 +77,7 @@ RAISE EXCEPTION 'Użytkownik nie dodał cię jeszcze do znajomych';
 ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
 RAISE EXCEPTION 'Użytkownik zablokował cię';
 END IF;
-RETURN NULL;
+RETURN NEW;
 END;
 $$ LANGUAGE PLPGSQL;
 
@@ -92,7 +92,7 @@ BEGIN
 if (NEW.message_text_content = '' OR NEW.message_text_content IS NULL) THEN
 RAISE EXCEPTION 'Wiadomość nie może być pusta!';
 END IF;
-RETURN NULL;
+RETURN NEW;
 END;
 $$ LANGUAGE PLPGSQL;
 
@@ -214,35 +214,37 @@ values('Masz kase?', 5, 1);
 
 
 ---- USUWANIE BAZY DANYCH
+-- Do poprawnego usunięcia bazy, trzeba usunąć użytkowników bazy danych (bazy danych, nie zawartości tabeli users). Na razie robie to manualnie, może uda się zrobić funkcje składowaną która będzie to wykonywać
+-- Nie ma takiego problemu przy usuwaniu usera z poziomu aplikacji, tylko przy "czystce" w trakcie testów - usuwania całej zawartości bazy
 
--- DELETE FROM users CASCADE;
--- DROP TABLE users CASCADE;
--- DELETE FROM friends CASCADE;
--- DROP TABLE friends CASCADE;
--- DELETE FROM messages;
--- DROP TABLE messages CASCADE;
--- DROP TRIGGER at_insert_message_check_is_friends on messages;--
--- DROP FUNCTION is_friend();
--- DROP TRIGGER at_insert_message_check_null on messages;
--- DROP FUNCTION check_null();
+DELETE FROM friends CASCADE;
+DROP TABLE friends CASCADE;
+DELETE FROM users CASCADE;
+DROP TABLE users CASCADE;
+DELETE FROM messages;
+DROP TABLE messages CASCADE;
+-- DROP TRIGGER at_insert_message_check_is_friends on messages; -- Nie potrzeba usuwać tego triggera gdy kaskadowo usuwamy messages - jest usuwany przy usuwaniu messages
+DROP FUNCTION is_friend();
+DROP TRIGGER at_insert_message_check_null on messages;  -- Tak samo jak wyżej
+DROP FUNCTION check_null();
 
--- REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM testconnection;
--- REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM testconnection;
--- REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM testconnection;
--- REVOKE ALL ON SCHEMA public FROM testconnection;
--- DROP USER testconnection;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM testconnection;
+REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM testconnection;
+REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM testconnection;
+REVOKE ALL ON SCHEMA public FROM testconnection;
+DROP USER testconnection;
 
--- REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM usercreator;
--- REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM usercreator;
--- REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM usercreator;
--- REVOKE ALL ON SCHEMA public FROM usercreator;
--- DROP USER usercreator;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM usercreator;
+REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM usercreator;
+REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM usercreator;
+REVOKE ALL ON SCHEMA public FROM usercreator;
+DROP USER usercreator;
 
--- REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM userdeleater;
--- REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM userdeleater;
--- REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM userdeleater;
--- REVOKE ALL ON SCHEMA public FROM userdeleater;
--- DROP USER userdeleater;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM userdeleater;
+REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM userdeleater;
+REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM userdeleater;
+REVOKE ALL ON SCHEMA public FROM userdeleater;
+DROP USER userdeleater;
 
 
 ------------------------------------------

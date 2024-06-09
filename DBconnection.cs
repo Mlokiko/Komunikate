@@ -113,6 +113,7 @@ namespace WinFormsTest3
         /// 1 dla prawidłowo wykonanego inserta
         /// 0 gdy nie ma w bazie danego użytkownika
         /// 2 gdy zawartość wiadomości jest pusta
+        /// 3 gdy pojawił się inny błąd
         /// </summary>
         /// <param name="username"></param>
         /// <param name="message_content"></param>
@@ -246,7 +247,15 @@ namespace WinFormsTest3
         /// <returns></returns>
         public static bool CheckFriendStatus(string userName)
         {
-
+            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
+            try
+            {
+                con.Open();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
             return true;
         }
         public static bool AddFriend(string userName)
