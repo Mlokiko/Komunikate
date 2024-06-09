@@ -168,6 +168,7 @@ namespace WinFormsTest3
             var create_user = new NpgsqlCommand($"INSERT INTO USERS(username, password, name, surname) VALUES('{userName}', '{password}', '{name}', '{surname}')", con);
             var check_id = new NpgsqlCommand($"SELECT user_id FROM users WHERE username = '{userName}'", con);
             var create_database_user = new NpgsqlCommand($"CREATE USER {userName} PASSWORD '{password}'", con);
+            var add_to_group = new NpgsqlCommand($"ALTER GROUP user_group ADD user {userName}", con);
             var create_view_list_messages = new NpgsqlCommand($"CREATE VIEW view_{userName}_list_messages AS SELECT * FROM messages WHERE sender_id = {userID} OR receiver_id = {userID}", con);
             var create_view_read_users = new NpgsqlCommand($"CREATE VIEW view_{userName}_read_users AS SELECT user_id, username from users", con);
             var create_grant_on_list_messages = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_list_messages TO {userName}", con);
@@ -183,6 +184,9 @@ namespace WinFormsTest3
                 con.Close();
                 con.Open();
                 create_database_user.ExecuteNonQuery();
+                con.Close();
+                con.Open();
+                add_to_group.ExecuteNonQuery();
                 con.Close();
                 con.Open();
                 create_view_list_messages.ExecuteNonQuery();
@@ -217,6 +221,7 @@ namespace WinFormsTest3
             var cmd = new NpgsqlCommand($"DELETE FROM users WHERE user_id = {DBconnection.user_id}", con);
             var cmd2 = new NpgsqlCommand($"DROP OWNED BY {DBconnection.user_name}", con);
             var cmd3 = new NpgsqlCommand($"DROP USER {DBconnection.user_name}", con);
+            var cmd4 = new NpgsqlCommand($"", con); // Do dodania usuwanie z grupy
             try
             {
                 con.Open();

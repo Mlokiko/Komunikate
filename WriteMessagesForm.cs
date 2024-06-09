@@ -19,21 +19,20 @@ namespace WinFormsTest3
 
         private void sendButton_Click(object sender, EventArgs e)
         {
-            if(DBconnection.WriteMessage(userNameText.Text, messageContentText.Text) == 0)
+            switch (DBconnection.WriteMessage(userNameText.Text, messageContentText.Text))
             {
-                MessageBox.Show("Nie ma użytkownika o takiej nazwie");
-            }
-            else if (DBconnection.WriteMessage(userNameText.Text, messageContentText.Text) == 1)
-            {
-                MessageBox.Show("Poprawnie wysłano wiadomość");
-            }
-            else if (DBconnection.WriteMessage(userNameText.Text, messageContentText.Text) == 2)
-            {
-                MessageBox.Show("Zawartość wiadomości nie może być pusta");
-            }
-            else if (DBconnection.WriteMessage(userNameText.Text, messageContentText.Text) == 3)
-            {
-                MessageBox.Show("Inny błąd?");
+                case 0:
+                    MessageBox.Show("Nie ma użytkownika o takiej nazwie");
+                    break;
+                case 1:
+                    MessageBox.Show("Poprawnie wysłano wiadomość");
+                    break;
+                case 2:
+                    MessageBox.Show("Zawartość wiadomości nie może być pusta");
+                    break;
+                case 3:
+                    MessageBox.Show("Inny błąd?");
+                    break;
             }
         }
     }

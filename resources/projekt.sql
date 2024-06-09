@@ -10,7 +10,7 @@ CREATE TABLE users (
 
 CREATE TABLE friends (
     user_id INT,
-    friend_id INT,--
+    friend_id INT,
     status VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, friend_id),
@@ -30,6 +30,7 @@ CREATE TABLE messages(
 
 CREATE GROUP user_group;
 GRANT INSERT on messages TO user_group;
+GRANT ALL PRIVILEGES ON messages_message_id_seq TO user_group;		-- all privileges czy tylko read wystarczy?
 
 -- Specjalni userzy pozwalają na czynności którymi są nazwani. Niestety dla usuwania użytkowników nie jestem w stanie znależć innego rozwiązania jak nadać mu prawa superusera
 
@@ -49,11 +50,11 @@ CREATE USER userdeleater PASSWORD 'userDeleater' SUPERUSER;
 -- Jeżeli schema jest inna niż public, trzeba zmodyfikować poniższe granty
 -- CREATEROLE pozwala tworzyć role (użytkowników bazy danych)
 
-CREATE USER usercreator PASSWORD 'userCreator' CREATEROLE;
-GRANT USAGE, CREATE ON SCHEMA public TO usercreator;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO usercreator;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO usercreator;
-
+CREATE USER usercreator PASSWORD 'userCreator' SUPERUSER;			-- zamiast SUPERUSER CREATEROLE
+-- Ogólnie to poddaje się, nie wiem jak pozwolić mu dodawać do grup bez nadawania mu superusera
+-- GRANT USAGE, CREATE ON SCHEMA public TO usercreator;
+-- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO usercreator;  -- sequences, czyli specjalne tabele tworzone gdy używa się np. serial (autonumeracji)
+-- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO usercreator;
 
 -- Trigger sprawdzający czy użytkownicy są znajomymi
 -- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość, jest zrobione po stronie aplikacji
@@ -83,7 +84,7 @@ RAISE EXCEPTION 'Użytkownik zablokował cię';
 END IF;
 RETURN NEW;
 END;
-$$ LANGUAGE PLPGSQL;
+$$ LANGUAGE PLPGSQL SECURITY DEFINER;			-- SECURITY DEFINER pozwala na wykonanie funkcji z prawami właściciela funkcji (superuser tworzący bazę danych), a nie użytkownika używającego funkcji.
 
 CREATE OR REPLACE TRIGGER at_insert_message_check_is_friends BEFORE INSERT OR UPDATE ON messages
 FOR EACH ROW EXECUTE PROCEDURE is_friend();
@@ -110,74 +111,98 @@ FOR EACH ROW EXECUTE PROCEDURE check_null();
 insert into users(username, password, name, surname)
 values('Andrju', 'password123', 'Andrzej', 'Deczko');
 CREATE USER Andrju PASSWORD 'password123';
-CREATE VIEW view_Andrju_list_messages AS
+CREATE VIEW view_Andrju_list_messages AS				-- Pozwala użytkownikowi na odczytywanie swoich wiadomości
 SELECT * FROM messages
 WHERE sender_id = 1 OR receiver_id = 1;
-CREATE VIEW view_Andrju_read_users AS
+CREATE VIEW view_Andrju_read_users AS					-- Pozwala użytkownikowi na odczytywanie userów (z pominięciem ich haseł i innych danych w tabeli)
 SELECT user_id, username from users;
-GRANT SELECT ON View_Andrju_list_messages TO Andrju;
+CREATE VIEW view_Andrju_read_friends AS					-- Pozwala użytkownikowi na odczytywanie swoich znajomych
+SELECT * FROM friends
+WHERE user_id = 1 OR friend_id = 1;
+GRANT SELECT ON view_Andrju_read_friends TO Andrju;
+GRANT SELECT ON view_Andrju_list_messages TO Andrju;
 GRANT SELECT ON View_Andrju_read_users TO Andrju;
-ALTER GROUP user_group ADD USER Andrju
+ALTER GROUP user_group ADD USER Andrju;					-- Dodaje użytkownika do grupy pozwalającej pisać wiadomości
 
 insert into users(username, password, name, surname)
 values('Mateo', 'Grucha142', 'Mateusz', 'Pikora');
 CREATE USER Mateo PASSWORD 'Grucha142';
 CREATE VIEW view_Mateo_list_messages AS
 SELECT * FROM messages
-WHERE sender_id = 1 OR receiver_id = 1;
+WHERE sender_id = 2 OR receiver_id = 2;
 CREATE VIEW view_Mateo_read_users AS
 SELECT user_id, username from users;
+CREATE VIEW view_Mateo_read_friends AS
+SELECT * FROM friends
+WHERE user_id = 2 OR friend_id = 2;
+GRANT SELECT ON view_Mateo_read_friends TO Mateo;
 GRANT SELECT ON View_Mateo_list_messages TO Mateo;
 GRANT SELECT ON View_Mateo_read_users TO Mateo;
-ALTER GROUP user_group ADD USER Mateo
+ALTER GROUP user_group ADD USER Mateo;
 
 insert into users(username, password, name, surname)
 values('Filipo', '232gamaciko', 'Filip', 'Morczynski');
 CREATE USER Filipo PASSWORD '232gamaciko';
 CREATE VIEW view_Filipo_list_messages AS
 SELECT * FROM messages
-WHERE sender_id = 1 OR receiver_id = 1;
+WHERE sender_id = 3 OR receiver_id = 3;
 CREATE VIEW view_Filipo_read_users AS
 SELECT user_id, username from users;
+CREATE VIEW view_Filipo_read_friends AS
+SELECT * FROM friends
+WHERE user_id = 3 OR friend_id = 3;
+GRANT SELECT ON view_Filipo_read_friends TO Filipo;
 GRANT SELECT ON View_Filipo_list_messages TO Filipo;
 GRANT SELECT ON View_Filipo_read_users TO Filipo;
-ALTER GROUP user_group ADD USER Filipo
+ALTER GROUP user_group ADD USER Filipo;
 
 insert into users(username, password, name, surname)
 values('Greg', 'maslo232', 'Grzegorz', 'Duszynski');
 CREATE USER Greg PASSWORD 'maslo232';
 CREATE VIEW view_Greg_list_messages AS
 SELECT * FROM messages
-WHERE sender_id = 1 OR receiver_id = 1;
+WHERE sender_id = 4 OR receiver_id = 4;
 CREATE VIEW view_Greg_read_users AS
 SELECT user_id, username from users;
+CREATE VIEW view_Greg_read_friends AS
+SELECT * FROM friends
+WHERE user_id = 4 OR friend_id = 4;
+GRANT SELECT ON view_Greg_read_friends TO Greg;
 GRANT SELECT ON View_Greg_list_messages TO Greg;
 GRANT SELECT ON View_Greg_read_users TO Greg;
-ALTER GROUP user_group ADD USER Greg
+ALTER GROUP user_group ADD USER Greg;
 
 insert into users(username, password, name, surname)
 values('Orion', 'husaria192', 'Olaf', 'DiriDiri');
 CREATE USER Orion PASSWORD 'husaria192';
 CREATE VIEW view_Orion_list_messages AS
 SELECT * FROM messages
-WHERE sender_id = 1 OR receiver_id = 1;
+WHERE sender_id = 5 OR receiver_id = 5;
 CREATE VIEW view_Orion_read_users AS
 SELECT user_id, username from users;
+CREATE VIEW view_Orion_read_friends AS
+SELECT * FROM friends
+WHERE user_id = 5 OR friend_id = 5;
+GRANT SELECT ON view_Orion_read_friends TO Orion;
 GRANT SELECT ON View_Orion_list_messages TO Orion;
 GRANT SELECT ON View_Orion_read_users TO Orion;
-ALTER GROUP user_group ADD USER Orion
+ALTER GROUP user_group ADD USER Orion;
 
 insert into users(username, password, name, surname)
 values('Kapa', 'xxxBbBxxx0', 'Kacper', 'Bednarek');
 CREATE USER Kapa PASSWORD 'xxxBbBxxx0';
 CREATE VIEW view_Kapa_list_messages AS
 SELECT * FROM messages
-WHERE sender_id = 1 OR receiver_id = 1;
+WHERE sender_id = 6 OR receiver_id = 6;
 CREATE VIEW view_Kapa_read_users AS
 SELECT user_id, username from users;
+CREATE VIEW view_Kapa_read_friends AS
+SELECT * FROM friends
+WHERE user_id = 6 OR friend_id = 6;
+GRANT SELECT ON view_Kapa_read_friends TO Kapa;
 GRANT SELECT ON View_Kapa_list_messages TO Kapa;
 GRANT SELECT ON View_Kapa_read_users TO Kapa;
-ALTER GROUP user_group ADD USER Kapa
+ALTER GROUP user_group ADD USER Kapa;
 
 -- Przykładowe relacje pomiędzy użytkownikami:
 
@@ -227,11 +252,12 @@ values('Masz kase?', 5, 1);
 -- Do poprawnego usunięcia bazy, trzeba usunąć użytkowników bazy danych (bazy danych, nie zawartości tabeli users). Na razie robie to manualnie w pgadmin, może uda się zrobić funkcje składowaną która będzie to wykonywać
 -- Nie ma takiego problemu przy usuwaniu usera z poziomu aplikacji, tylko przy "czystce" w trakcie testów - usuwania całej zawartości bazy
 
+
 DELETE FROM friends CASCADE;
 DROP TABLE friends CASCADE;
 DELETE FROM users CASCADE;
 DROP TABLE users CASCADE;
-DELETE FROM messages;
+DELETE FROM messages CASCADE;
 DROP TABLE messages CASCADE;
 -- DROP TRIGGER at_insert_message_check_is_friends on messages; -- Nie potrzeba usuwać tego triggera gdy kaskadowo usuwamy messages - jest usuwany przy usuwaniu messages
 DROP FUNCTION is_friend();
@@ -256,6 +282,13 @@ REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public FROM userdeleater;
 REVOKE ALL ON SCHEMA public FROM userdeleater;
 DROP USER userdeleater;
 
+DROP GROUP user_group;
+DROP USER andrju;
+DROP USER mateo;
+DROP USER filipo;
+DROP USER greg;
+DROP USER orion;
+DROP USER kapa;
 
 ------------------------------------------
 
