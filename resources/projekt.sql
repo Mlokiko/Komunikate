@@ -266,6 +266,8 @@ values(1, 5, 'accepted');
 insert into friends(user_id, friend_id, status)
 values(1, 3, 'blocked');
 insert into friends(user_id, friend_id, status)
+values(2, 3, 'blocked');
+insert into friends(user_id, friend_id, status)
 values(1, 4, 'requested');
 
 

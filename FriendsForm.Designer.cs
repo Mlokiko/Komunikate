@@ -38,7 +38,7 @@
             // 
             // deleteFriendButton
             // 
-            deleteFriendButton.Location = new Point(482, 270);
+            deleteFriendButton.Location = new Point(482, 328);
             deleteFriendButton.Name = "deleteFriendButton";
             deleteFriendButton.Size = new Size(136, 23);
             deleteFriendButton.TabIndex = 0;
@@ -56,16 +56,17 @@
             // 
             // addFriendButton
             // 
-            addFriendButton.Location = new Point(482, 299);
+            addFriendButton.Location = new Point(482, 270);
             addFriendButton.Name = "addFriendButton";
             addFriendButton.Size = new Size(136, 23);
             addFriendButton.TabIndex = 2;
             addFriendButton.Text = "Dodaj znajomego";
             addFriendButton.UseVisualStyleBackColor = true;
+            addFriendButton.Click += addFriendButton_Click;
             // 
             // blockFriendButton
             // 
-            blockFriendButton.Location = new Point(482, 328);
+            blockFriendButton.Location = new Point(482, 299);
             blockFriendButton.Name = "blockFriendButton";
             blockFriendButton.Size = new Size(136, 23);
             blockFriendButton.TabIndex = 3;

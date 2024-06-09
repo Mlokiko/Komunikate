@@ -38,5 +38,13 @@ namespace WinFormsTest3
                     break;
             }
         }
+
+        private void addFriendButton_Click(object sender, EventArgs e)
+        {
+            if (DBconnection.AddFriend(userNameText.Text))
+                MessageBox.Show($"Dodano {userNameText.Text} do znajomych");
+            else
+                MessageBox.Show($"Nie dodano {userNameText.Text} do znajomych");
+        }
     }
 }

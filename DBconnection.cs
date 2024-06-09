@@ -271,16 +271,38 @@ namespace WinFormsTest3
         }
         public static bool AddFriend(string userName)
         {
-            return true;
-        }
-        public static bool DeleteFriend(string userName)
-        {
+            int friend_id = 0;
+            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
+            try
+            {
+                var cmd = new NpgsqlCommand($"SELECT user_id, username FROM View_{userName}_read_users WHERE username = '{userName}'", con);
+                NpgsqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    friend_id = reader.GetInt32(0);
+                }
+
+                con.Open();
+                var cmd2 = new NpgsqlCommand($"DELETE FROM friends WHERE user_id = {DBconnection.user_id} AND friend_id = {friend_id}", con);
+                cmd2.ExecuteNonQuery();
+                con.Close();
+            }
+            catch (Exception e)
+            { 
+                MessageBox.Show(e.Message); 
+                return false; 
+            }
             return true;
         }
         public static bool BlockFriend(string userName)
         {
 
-        return true;
+            return true;
+        }
+        public static bool DeleteFriend(string userName)
+        {
+            return true;
         }
     }
 }
