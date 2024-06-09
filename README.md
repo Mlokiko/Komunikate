@@ -5,4 +5,4 @@ Do poprawnego działania wymagane jest:
 - zaimportowanie tabel oraz wymaganych użytkowników (testconnection oraz usercreator)
 - zaimportowanie triggerów oraz funkcji składowanej z pliku projekt.sql (znajduje się w folderze resources)
 
-Plik projekt.sql zawiera testową zawartość bazy danych (przykładowych użytkowników, ich statusy znajomości oraz wiadomości)
+Plik projekt.sql zawiera wymagane tabele, relacje pomiędzy nimi, funkcje składowe oraz testową zawartość bazy danych (przykładowych użytkowników, ich statusy znajomości oraz wiadomości)
