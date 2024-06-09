@@ -1,5 +1,8 @@
 PILNE
 
+- Mo¿na stworzyæ grupê i nadaæ jej prawo do funkcji write (która pozwala pisaæ tylko z podanym id)
+
+- dodaæ grupy userów - dla userów bazy danych, nadaæ im mo¿liwoœæ pisania wiadomoœci
 - FRIENDS - Aktualnie sprawdzane jest czy którykolwiek z userów ma status znajomego/zablokowanego, je¿eli tak to obydwoje maj¹ ten status. request friend nie dziala/robi nic
 
 MNIEJ PILNE

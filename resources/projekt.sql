@@ -26,6 +26,10 @@ CREATE TABLE messages(
 	sender_id INTEGER,
 	receiver_id INTEGER);
 
+-- Grupa do której dołączają wszyscy userzy - pozwala na umieszczanie danych w messages
+
+CREATE GROUP user_group;
+GRANT INSERT on messages TO user_group;
 
 -- Specjalni userzy pozwalają na czynności którymi są nazwani. Niestety dla usuwania użytkowników nie jestem w stanie znależć innego rozwiązania jak nadać mu prawa superusera
 
@@ -113,6 +117,7 @@ CREATE VIEW view_Andrju_read_users AS
 SELECT user_id, username from users;
 GRANT SELECT ON View_Andrju_list_messages TO Andrju;
 GRANT SELECT ON View_Andrju_read_users TO Andrju;
+ALTER GROUP user_group ADD USER Andrju
 
 insert into users(username, password, name, surname)
 values('Mateo', 'Grucha142', 'Mateusz', 'Pikora');
@@ -124,6 +129,7 @@ CREATE VIEW view_Mateo_read_users AS
 SELECT user_id, username from users;
 GRANT SELECT ON View_Mateo_list_messages TO Mateo;
 GRANT SELECT ON View_Mateo_read_users TO Mateo;
+ALTER GROUP user_group ADD USER Mateo
 
 insert into users(username, password, name, surname)
 values('Filipo', '232gamaciko', 'Filip', 'Morczynski');
@@ -135,6 +141,7 @@ CREATE VIEW view_Filipo_read_users AS
 SELECT user_id, username from users;
 GRANT SELECT ON View_Filipo_list_messages TO Filipo;
 GRANT SELECT ON View_Filipo_read_users TO Filipo;
+ALTER GROUP user_group ADD USER Filipo
 
 insert into users(username, password, name, surname)
 values('Greg', 'maslo232', 'Grzegorz', 'Duszynski');
@@ -146,6 +153,7 @@ CREATE VIEW view_Greg_read_users AS
 SELECT user_id, username from users;
 GRANT SELECT ON View_Greg_list_messages TO Greg;
 GRANT SELECT ON View_Greg_read_users TO Greg;
+ALTER GROUP user_group ADD USER Greg
 
 insert into users(username, password, name, surname)
 values('Orion', 'husaria192', 'Olaf', 'DiriDiri');
@@ -157,6 +165,7 @@ CREATE VIEW view_Orion_read_users AS
 SELECT user_id, username from users;
 GRANT SELECT ON View_Orion_list_messages TO Orion;
 GRANT SELECT ON View_Orion_read_users TO Orion;
+ALTER GROUP user_group ADD USER Orion
 
 insert into users(username, password, name, surname)
 values('Kapa', 'xxxBbBxxx0', 'Kacper', 'Bednarek');
@@ -168,6 +177,7 @@ CREATE VIEW view_Kapa_read_users AS
 SELECT user_id, username from users;
 GRANT SELECT ON View_Kapa_list_messages TO Kapa;
 GRANT SELECT ON View_Kapa_read_users TO Kapa;
+ALTER GROUP user_group ADD USER Kapa
 
 -- Przykładowe relacje pomiędzy użytkownikami:
 
@@ -214,7 +224,7 @@ values('Masz kase?', 5, 1);
 
 
 ---- USUWANIE BAZY DANYCH
--- Do poprawnego usunięcia bazy, trzeba usunąć użytkowników bazy danych (bazy danych, nie zawartości tabeli users). Na razie robie to manualnie, może uda się zrobić funkcje składowaną która będzie to wykonywać
+-- Do poprawnego usunięcia bazy, trzeba usunąć użytkowników bazy danych (bazy danych, nie zawartości tabeli users). Na razie robie to manualnie w pgadmin, może uda się zrobić funkcje składowaną która będzie to wykonywać
 -- Nie ma takiego problemu przy usuwaniu usera z poziomu aplikacji, tylko przy "czystce" w trakcie testów - usuwania całej zawartości bazy
 
 DELETE FROM friends CASCADE;
@@ -225,7 +235,7 @@ DELETE FROM messages;
 DROP TABLE messages CASCADE;
 -- DROP TRIGGER at_insert_message_check_is_friends on messages; -- Nie potrzeba usuwać tego triggera gdy kaskadowo usuwamy messages - jest usuwany przy usuwaniu messages
 DROP FUNCTION is_friend();
-DROP TRIGGER at_insert_message_check_null on messages;  -- Tak samo jak wyżej
+-- DROP TRIGGER at_insert_message_check_null on messages;  -- Tak samo jak wyżej
 DROP FUNCTION check_null();
 
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM testconnection;
