@@ -38,7 +38,7 @@
             // 
             // deleteFriendButton
             // 
-            deleteFriendButton.Location = new Point(424, 236);
+            deleteFriendButton.Location = new Point(482, 270);
             deleteFriendButton.Name = "deleteFriendButton";
             deleteFriendButton.Size = new Size(136, 23);
             deleteFriendButton.TabIndex = 0;
@@ -48,7 +48,7 @@
             // userNameLabel
             // 
             userNameLabel.AutoSize = true;
-            userNameLabel.Location = new Point(325, 188);
+            userNameLabel.Location = new Point(365, 193);
             userNameLabel.Name = "userNameLabel";
             userNameLabel.Size = new Size(111, 15);
             userNameLabel.TabIndex = 1;
@@ -56,7 +56,7 @@
             // 
             // addFriendButton
             // 
-            addFriendButton.Location = new Point(424, 283);
+            addFriendButton.Location = new Point(482, 299);
             addFriendButton.Name = "addFriendButton";
             addFriendButton.Size = new Size(136, 23);
             addFriendButton.TabIndex = 2;
@@ -65,7 +65,7 @@
             // 
             // blockFriendButton
             // 
-            blockFriendButton.Location = new Point(424, 333);
+            blockFriendButton.Location = new Point(482, 328);
             blockFriendButton.Name = "blockFriendButton";
             blockFriendButton.Size = new Size(136, 23);
             blockFriendButton.TabIndex = 3;
@@ -74,9 +74,9 @@
             // 
             // checkFriendStatusButton
             // 
-            checkFriendStatusButton.Location = new Point(548, 184);
+            checkFriendStatusButton.Location = new Point(482, 241);
             checkFriendStatusButton.Name = "checkFriendStatusButton";
-            checkFriendStatusButton.Size = new Size(109, 23);
+            checkFriendStatusButton.Size = new Size(136, 23);
             checkFriendStatusButton.TabIndex = 4;
             checkFriendStatusButton.Text = "Sprawdz status";
             checkFriendStatusButton.UseVisualStyleBackColor = true;
@@ -84,9 +84,9 @@
             // 
             // userNameText
             // 
-            userNameText.Location = new Point(442, 185);
+            userNameText.Location = new Point(482, 190);
             userNameText.Name = "userNameText";
-            userNameText.Size = new Size(100, 23);
+            userNameText.Size = new Size(136, 23);
             userNameText.TabIndex = 5;
             // 
             // FriendsForm

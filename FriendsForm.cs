@@ -19,7 +19,24 @@ namespace WinFormsTest3
 
         private void checkFriendStatusButton_Click(object sender, EventArgs e)
         {
-            DBconnection.CheckFriendStatus(userNameText.Text);
+            switch (DBconnection.CheckFriendStatus(userNameText.Text))
+            {
+                case 0:
+                    MessageBox.Show($"Nie jesteś znajomym z {userNameText.Text}");
+                    break;
+                case 1:
+                    MessageBox.Show($"Jesteś w fazie \"reguest\" z {userNameText.Text}");
+                    break;
+                case 2:
+                    MessageBox.Show($"Albo ty albo użytkownik {userNameText.Text} zablokował znajomość");
+                    break;
+                case 3:
+                    MessageBox.Show($"Jesteś znajomym z {userNameText.Text}");
+                    break;
+                case 4:
+                    MessageBox.Show($"Jakiś błąd?");
+                    break;
+            }
         }
     }
 }

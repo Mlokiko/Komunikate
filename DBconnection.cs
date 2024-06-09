@@ -245,22 +245,29 @@ namespace WinFormsTest3
             return true;
         }
         /// <summary>
-        /// Funkcja zwraca 1 Gdy użytkownik jest znajomym, 2 gdy jest zablokowany, 3 gdy nim nie jest.
+        /// Funkcja zwraca 0 gdy nie jest sie znajomym, 1 gdy jest sie w fazie request, 2 gdy jest sie zablokowanym, 3 gdy jest sie znajomym, 4 gdy jest błąd?
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public static bool CheckFriendStatus(string userName)
+        public static int CheckFriendStatus(string userName)
         {
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
                 con.Open();
+                var cmd = new NpgsqlCommand($"SELECT is_friend2({DBconnection.user_id}, '{userName}')", con);
+                NpgsqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    return reader.GetInt32(0);
+                }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
             }
-            return true;
+            return 4;
         }
         public static bool AddFriend(string userName)
         {

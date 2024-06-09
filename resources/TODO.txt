@@ -12,6 +12,8 @@ PILNE
 
 - dodac wiadomoœæ w trakcie logowania, gdy u¿ytkownik chce ponownie zalogowaæ siê na te same konto, ze juz jest zalogowany
 
+- dodac sprawdzenie w funkcji is_friend2 czy nie probuje sie samego siebie
+
 MNIEJ PILNE
 
 - Dodaæ zabezpieczenie nie pozwalaj¹ce userom na tworzenie u¿ytkownika o nazwie postgres, usercreator, testconnection itp.
