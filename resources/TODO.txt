@@ -1,8 +1,6 @@
 PILNE
 - naprawiæ kolejnoœæ tabulacji w formularzu write messages (user, wiadomoœæ, przycisk, a nie user, przycisk, wiadomoœæ)
 
-- Odmowa dostêpu do sekwencji messages_message_id_seg przy próbie pisania wiadomoœci w aplikacji ( i b³¹d wyœwietla sie pare razy, tak z 4-5)
-
 - u¿ytkownik/rola createuser ma superadmina - trzeba sprawdziæ jakie dok³adnie specyficznie prawa trzeba mu nadaæ, aby by³ w stanie tworzyæ userów
 
 - FRIENDS - Aktualnie sprawdzane jest czy którykolwiek z userów ma status znajomego/zablokowanego, je¿eli tak to obydwoje maj¹ ten status. request friend nie dziala/robi nic

@@ -221,7 +221,6 @@ namespace WinFormsTest3
             var cmd = new NpgsqlCommand($"DELETE FROM users WHERE user_id = {DBconnection.user_id}", con);
             var cmd2 = new NpgsqlCommand($"DROP OWNED BY {DBconnection.user_name}", con);
             var cmd3 = new NpgsqlCommand($"DROP USER {DBconnection.user_name}", con);
-            var cmd4 = new NpgsqlCommand($"", con); // Do dodania usuwanie z grupy
             try
             {
                 con.Open();
