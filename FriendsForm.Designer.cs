@@ -34,6 +34,7 @@
             blockFriendButton = new Button();
             checkFriendStatusButton = new Button();
             userNameText = new TextBox();
+            infoLabel = new Label();
             SuspendLayout();
             // 
             // deleteFriendButton
@@ -90,11 +91,21 @@
             userNameText.Size = new Size(136, 23);
             userNameText.TabIndex = 5;
             // 
+            // infoLabel
+            // 
+            infoLabel.AutoSize = true;
+            infoLabel.Location = new Point(482, 216);
+            infoLabel.Name = "infoLabel";
+            infoLabel.Size = new Size(151, 15);
+            infoLabel.TabIndex = 6;
+            infoLabel.Text = "Wielkość liter ma znaczenie";
+            // 
             // FriendsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 541);
+            Controls.Add(infoLabel);
             Controls.Add(userNameText);
             Controls.Add(checkFriendStatusButton);
             Controls.Add(blockFriendButton);
@@ -115,5 +126,6 @@
         private Button blockFriendButton;
         private Button checkFriendStatusButton;
         private TextBox userNameText;
+        private Label infoLabel;
     }
 }

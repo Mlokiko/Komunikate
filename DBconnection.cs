@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -35,7 +36,7 @@ namespace WinFormsTest3
                 var con = new NpgsqlConnection($"Server={server};Port={port};Database={database};Username=testconnection;Password=testConnection");
                 con.Open();
                 if (con.State == System.Data.ConnectionState.Open)
-                    MessageBox.Show("Success open postgreSQL connection.");
+                    MessageBox.Show("Połączono z serwerem.");
                 con.Close();
                 DBconnection.server = server;
                 DBconnection.port = port;
@@ -55,18 +56,12 @@ namespace WinFormsTest3
         /// <returns></returns>
         public static bool LogIn(string userName, string password)
         {
+            DBconnection.user_name = userName;
             DBconnection.user_name_lower = userName.ToLower();
-            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={password}");
+            DBconnection.user_password = password;
             try
             {
-                con.Open();
-                var cmd = new NpgsqlCommand($"SELECT user_id, username FROM View_{userName}_read_users WHERE username = '{userName}'", con);
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    DBconnection.user_id = reader.GetInt32(0);
-                }
+                DBconnection.user_id = NameToId(userName);
                 DBconnection.user_name = userName;
                 DBconnection.user_password = password;
                 return true;
@@ -75,7 +70,9 @@ namespace WinFormsTest3
             {
                 // To można by jakoś zmienić, żeby tą biblioteke dało się używać z innym frameworkiem UI (konsola, WPF, MAUI, cos webowego) bez zmian w kodzie
                 // (chyba) Najlepiej by było zwracać wartości liczbowe typu 1 - ok, 2 - error, 3 - inny error i obsługiwać je w kodzie programu, a nie tutaj
+                DBconnection.user_name = "";
                 DBconnection.user_name_lower = "";
+                DBconnection.user_password = "";
                 MessageBox.Show(ex.Message);
             }
             return false;
@@ -123,15 +120,7 @@ namespace WinFormsTest3
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
-                int receiver_id = 0;
-                con.Open();
-                var cmd = new NpgsqlCommand($"SELECT user_id, username FROM View_{DBconnection.user_name}_read_users WHERE username = '{username}'", con);
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    receiver_id = reader.GetInt32(0);
-                }
-                con.Close();
+                int receiver_id = NameToId(username);
 
                 if (receiver_id == 0)
                     return 0;
@@ -162,7 +151,7 @@ namespace WinFormsTest3
         /// <returns></returns>
         public static bool Register(string userName, string password, string name, string surname)
         {
-            int userID = 0;
+            int userID = 0;         // Tutaj można by to zmienić, nwm jak
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username=usercreator;Password=userCreator");
             con.Open();
             var create_user = new NpgsqlCommand($"INSERT INTO USERS(username, password, name, surname) VALUES('{userName}', '{password}', '{name}', '{surname}')", con);
@@ -176,11 +165,11 @@ namespace WinFormsTest3
             try
             {
                 create_user.ExecuteNonQuery();
-                NpgsqlDataReader reader = check_id.ExecuteReader();     
-                while (reader.Read())                                       // Ten kawałek kodu można by pewnie wykonać inaczej (lepiej)
-                {
-                    userID = reader.GetInt32(0);
-                }                                                           // Te otwieranie teoretycznie też można by zmienić
+                NpgsqlDataReader reader = check_id.ExecuteReader();
+                reader.Read();
+
+                userID = reader.GetInt32(0);
+                                                        // Te otwieranie teoretycznie można by zmienić, wykorzystać transakcje
                 con.Close();
                 con.Open();
                 create_database_user.ExecuteNonQuery();
@@ -257,11 +246,8 @@ namespace WinFormsTest3
                 con.Open();
                 var cmd = new NpgsqlCommand($"SELECT is_friend2({DBconnection.user_id}, '{userName}')", con);
                 NpgsqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    return reader.GetInt32(0);
-                }
+                reader.Read();
+                return reader.GetInt32(0);
             }
             catch (Exception e)
             {
@@ -271,17 +257,10 @@ namespace WinFormsTest3
         }
         public static bool AddFriend(string userName)
         {
-            int friend_id = 0;
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
-                var cmd = new NpgsqlCommand($"SELECT user_id, username FROM View_{userName}_read_users WHERE username = '{userName}'", con);
-                NpgsqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    friend_id = reader.GetInt32(0);
-                }
+                int friend_id = NameToId(userName);
 
                 con.Open();
                 var cmd2 = new NpgsqlCommand($"DELETE FROM friends WHERE user_id = {DBconnection.user_id} AND friend_id = {friend_id}", con);
@@ -303,6 +282,25 @@ namespace WinFormsTest3
         public static bool DeleteFriend(string userName)
         {
             return true;
+        }
+        /// <summary>
+        /// Funkcja zwraca ID podanego w argumencie usera. Łączy się z bazą jako aktualny użytkownik aplikacji
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public static int NameToId(string userName)
+        {
+            int zmienna = 0;
+            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
+            var cmd = new NpgsqlCommand($"SELECT user_id FROM View_{DBconnection.user_name}_read_users WHERE username = '{userName}'", con);
+            con.Open();
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                zmienna = reader.GetInt32(0);
+            }
+            con.Close();
+            return zmienna;
         }
     }
 }
