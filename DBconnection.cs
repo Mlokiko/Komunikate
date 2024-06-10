@@ -151,52 +151,52 @@ namespace WinFormsTest3
         /// <returns></returns>
         public static bool Register(string userName, string password, string name, string surname)
         {
-            int userID = 0;         // Tutaj można by to zmienić, nwm jak
-            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username=usercreator;Password=userCreator");
-            con.Open();
-            var create_user = new NpgsqlCommand($"INSERT INTO USERS(username, password, name, surname) VALUES('{userName}', '{password}', '{name}', '{surname}')", con);
-            var check_id = new NpgsqlCommand($"SELECT user_id FROM users WHERE username = '{userName}'", con);
-            var create_database_user = new NpgsqlCommand($"CREATE USER {userName} PASSWORD '{password}'", con);
-            var add_to_group = new NpgsqlCommand($"ALTER GROUP user_group ADD user {userName}", con);
-            var create_view_list_messages = new NpgsqlCommand($"CREATE VIEW view_{userName}_list_messages AS SELECT * FROM messages WHERE sender_id = {userID} OR receiver_id = {userID}", con);
-            var create_view_read_users = new NpgsqlCommand($"CREATE VIEW view_{userName}_read_users AS SELECT user_id, username from users", con);
-            var create_grant_on_list_messages = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_list_messages TO {userName}", con);
-            var create_grant_on_read_users = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_read_users TO {userName}", con);
-            try
+            using (var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username=usercreator;Password=userCreator"))
             {
-                create_user.ExecuteNonQuery();
-                NpgsqlDataReader reader = check_id.ExecuteReader();
-                reader.Read();
+                con.Open();
+                using (var transaction = con.BeginTransaction())
+                {
+                    try
+                    {
+                        int userID = 0;
+                        var create_user = new NpgsqlCommand($"INSERT INTO USERS(username, password, name, surname) VALUES('{userName}', '{password}', '{name}', '{surname}')", con);
+                        create_user.ExecuteNonQuery();
+                        var check_id = new NpgsqlCommand($"SELECT user_id FROM users WHERE username = '{userName}'", con);
+                        using (NpgsqlDataReader reader = check_id.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                userID = reader.GetInt32(0);
+                            }
+                        }
+                        var create_database_user = new NpgsqlCommand($"CREATE USER {userName} PASSWORD '{password}'", con);
+                        create_database_user.ExecuteNonQuery();
+                        var add_to_group = new NpgsqlCommand($"ALTER GROUP user_group ADD user {userName}", con);
+                        add_to_group.ExecuteNonQuery();
+                        var create_view_list_messages = new NpgsqlCommand($"CREATE VIEW view_{userName}_list_messages AS SELECT * FROM messages WHERE sender_id = {userID} OR receiver_id = {userID}", con);
+                        create_view_list_messages.ExecuteNonQuery();
+                        var create_view_read_users = new NpgsqlCommand($"CREATE VIEW view_{userName}_read_users AS SELECT user_id, username from users", con);
+                        create_view_read_users.ExecuteNonQuery();
+                        var create_grant_on_list_messages = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_list_messages TO {userName}", con);
+                        create_grant_on_list_messages.ExecuteNonQuery();
+                        var create_grant_on_read_users = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_read_users TO {userName}", con);
+                        create_grant_on_read_users.ExecuteNonQuery();
 
-                userID = reader.GetInt32(0);
-                                                        // Te otwieranie teoretycznie można by zmienić, wykorzystać transakcje
-                con.Close();
-                con.Open();
-                create_database_user.ExecuteNonQuery();
-                con.Close();
-                con.Open();
-                add_to_group.ExecuteNonQuery();
-                con.Close();
-                con.Open();
-                create_view_list_messages.ExecuteNonQuery();
-                con.Close();
-                con.Open();
-                create_view_read_users.ExecuteNonQuery();
-                con.Close();
-                con.Open();
-                create_grant_on_list_messages.ExecuteNonQuery();
-                con.Close();
-                con.Open();
-                create_grant_on_read_users.ExecuteNonQuery();
-                con.Close();
+                        transaction.Commit();
+                        con.Close();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        con.Close();
+                        MessageBox.Show(ex.Message);
+                        return false;
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return false;
-            }
-            return true;
         }
+
         /// <summary>
         /// Funkcja usuwa wpis w bazie danych, powiązania z użytkownikiem, oraz jego usera w DB. Zwraca true gdy uda się usunąć, false gdy nie.  
         /// </summary>

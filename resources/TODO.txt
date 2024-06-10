@@ -1,4 +1,7 @@
 PILNE
+
+- dodac komunikat gdy zalogowany u¿ytkownik próbuje stworzyæ nowego (rejestracja) zeby sie najpierw wylogowa³
+
 - naprawiæ kolejnoœæ tabulacji w formularzu write messages (user, wiadomoœæ, przycisk, a nie user, przycisk, wiadomoœæ)
 
 - u¿ytkownik/rola createuser ma superadmina - trzeba sprawdziæ jakie dok³adnie specyficznie prawa trzeba mu nadaæ, aby by³ w stanie tworzyæ userów
