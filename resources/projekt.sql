@@ -184,7 +184,7 @@ SELECT user_id, username from users;
 CREATE VIEW view_Andrju_read_friends AS					-- Pozwala użytkownikowi na odczytywanie swoich znajomych
 SELECT * FROM friends
 WHERE user_id = 1 OR friend_id = 1;
-GRANT SELECT, UPDATE, INSERT ON view_Andrju_read_friends TO Andrju;
+GRANT ALL PRIVILEGES ON view_Andrju_read_friends TO Andrju;
 GRANT SELECT ON view_Andrju_list_messages TO Andrju;
 GRANT SELECT ON View_Andrju_read_users TO Andrju;
 ALTER GROUP user_group ADD USER Andrju;					-- Dodaje użytkownika do grupy pozwalającej pisać wiadomości
@@ -200,7 +200,7 @@ SELECT user_id, username from users;
 CREATE VIEW view_Mateo_read_friends AS
 SELECT * FROM friends
 WHERE user_id = 2 OR friend_id = 2;
-GRANT SELECT, UPDATE, INSERT ON view_Mateo_read_friends TO Mateo;
+GRANT ALL PRIVILEGES ON view_Mateo_read_friends TO Mateo;
 GRANT SELECT ON View_Mateo_list_messages TO Mateo;
 GRANT SELECT ON View_Mateo_read_users TO Mateo;
 ALTER GROUP user_group ADD USER Mateo;
@@ -216,7 +216,7 @@ SELECT user_id, username from users;
 CREATE VIEW view_Filipo_read_friends AS
 SELECT * FROM friends
 WHERE user_id = 3 OR friend_id = 3;
-GRANT SELECT, UPDATE, INSERT ON view_Filipo_read_friends TO Filipo;
+GRANT ALL PRIVILEGES ON view_Filipo_read_friends TO Filipo;
 GRANT SELECT ON View_Filipo_list_messages TO Filipo;
 GRANT SELECT ON View_Filipo_read_users TO Filipo;
 ALTER GROUP user_group ADD USER Filipo;
@@ -232,7 +232,7 @@ SELECT user_id, username from users;
 CREATE VIEW view_Greg_read_friends AS
 SELECT * FROM friends
 WHERE user_id = 4 OR friend_id = 4;
-GRANT SELECT, UPDATE, INSERT ON view_Greg_read_friends TO Greg;
+GRANT ALL PRIVILEGES ON view_Greg_read_friends TO Greg;
 GRANT SELECT ON View_Greg_list_messages TO Greg;
 GRANT SELECT ON View_Greg_read_users TO Greg;
 ALTER GROUP user_group ADD USER Greg;
@@ -248,7 +248,7 @@ SELECT user_id, username from users;
 CREATE VIEW view_Orion_read_friends AS
 SELECT * FROM friends
 WHERE user_id = 5 OR friend_id = 5;
-GRANT SELECT, UPDATE, INSERT ON view_Orion_read_friends TO Orion;
+GRANT ALL PRIVILEGES ON view_Orion_read_friends TO Orion;
 GRANT SELECT ON View_Orion_list_messages TO Orion;
 GRANT SELECT ON View_Orion_read_users TO Orion;
 ALTER GROUP user_group ADD USER Orion;
@@ -264,7 +264,7 @@ SELECT user_id, username from users;
 CREATE VIEW view_Kapa_read_friends AS
 SELECT * FROM friends
 WHERE user_id = 6 OR friend_id = 6;
-GRANT SELECT, UPDATE, INSERT ON view_Kapa_read_friends TO Kapa;
+GRANT ALL PRIVILEGES ON view_Kapa_read_friends TO Kapa;
 GRANT SELECT ON View_Kapa_list_messages TO Kapa;
 GRANT SELECT ON View_Kapa_read_users TO Kapa;
 ALTER GROUP user_group ADD USER Kapa;

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Sources;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.ApplicationServices;
 using Npgsql;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
@@ -180,7 +181,7 @@ namespace WinFormsTest3
                         create_view_read_users.ExecuteNonQuery();
                         var create_view_read_friends = new NpgsqlCommand($"CREATE VIEW view_{userName}_read_friends AS SELECT * FROM friends WHERE user_id = {userID} OR friend_id = {userID}", con);
                         create_view_read_friends.ExecuteNonQuery();
-                        var grant_view_read_friends = new NpgsqlCommand($"GRANT SELECT, UPDATE, INSERT ON view_{userName}_read_friends TO {userName}", con);
+                        var grant_view_read_friends = new NpgsqlCommand($"GRANT ALL PRIVILEGES ON view_{userName}_read_friends TO {userName}", con);
                         grant_view_read_friends.ExecuteNonQuery();
                         var grant_on_list_messages = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_list_messages TO {userName}", con);
                         grant_on_list_messages.ExecuteNonQuery();
@@ -315,10 +316,28 @@ namespace WinFormsTest3
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
-                // TO DO
+                bool friend = false;
+                var checkIsFriend = new NpgsqlCommand($"SELECT EXISTS(SELECT 1 FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {DBconnection.user_id} AND friend_id = {NameToId(userName)}) UNION SELECT EXISTS(SELECT 1 FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {NameToId(userName)} AND friend_id = {DBconnection.user_id})", con);
+
                 con.Open();
-                var cmd = new NpgsqlCommand($"", con);
+                using (NpgsqlDataReader reader = checkIsFriend.ExecuteReader())
+                {
+                    while (reader.Read())           // Nie mam pojęcia czemu w while to działa a poza nie... niech ktoś to sprawdzi, zastanawia mnie to
+                    {
+                        friend = reader.GetBoolean(0);
+                    }
+                }
+                if (!friend)
+                {
+                    MessageBox.Show($"Użytkownik {userName} Nie jest twoim znajomym");
+                    return false;
+                }
+                    
+                var cmd = new NpgsqlCommand($"DELETE FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {DBconnection.user_id} AND friend_id = {NameToId(userName)}", con);
+                var cmd2 = new NpgsqlCommand($"DELETE FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {NameToId(userName)} AND friend_id = {DBconnection.user_id}", con);
                 cmd.ExecuteNonQuery();
+                cmd2.ExecuteNonQuery();
+                con.Close();
                 return true;
             }
             catch (Exception e)

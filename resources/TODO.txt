@@ -1,5 +1,7 @@
 PILNE ----------------------------------------------------------------------------------------------------------------
 
+- Dodaæ odblokowanie znajomego
+
 - Dodaæ indexy, nwm gdzie, ale trzeba dla "kompletnoœci" bo to w koñcu projekt z sql'a
 
 - u¿ytkownik/rola createuser ma superadmina - trzeba sprawdziæ jakie dok³adnie specyficznie prawa trzeba mu nadaæ, aby by³ w stanie tworzyæ userów
@@ -9,6 +11,10 @@ PILNE --------------------------------------------------------------------------
 - Testy wszystkich funkcji, czy jakiœ b³¹d siê nie wkrad³
 
 MNIEJ PILNE  ----------------------------------------------------------------------------------------------------------------
+
+- usingi w DBconnection sprawdzic - czy potrzebne?
+
+- skróciæ nazwy view, np. view_mateo_read_friends na view_mateo_friends
 
 - Mo¿na dodaæ do tabeli friends atrybut "updated at" albo zamieniaæ "created_at" na samoaktualizuj¹c¹ siê datê... nawet lepszy pomys³
 - Dodaæ zabezpieczenie nie pozwalaj¹ce userom na tworzenie u¿ytkownika o nazwie postgres, usercreator, testconnection itp.
