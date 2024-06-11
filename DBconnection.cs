@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -276,6 +277,8 @@ namespace WinFormsTest3
         }
         public static bool AddFriend(string userName)
         {
+            string v_your_status = "";
+            string v_his_status = "";
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
@@ -284,23 +287,8 @@ namespace WinFormsTest3
                 var his_status = new NpgsqlCommand($"SELECT status FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {friend_id} AND friend_id = {DBconnection.user_id}", con);
 
                 con.Open();
-                string v_your_status = "";
-                string v_his_status = "";
+                
 
-                /* if (request do znaj){
-                 *  zamien swoj i jego status na znaj
-                 * }
-                 * elseif( ty go zablokowałes){
-                 *  show("Najpierw odblokuj użytkownika")
-                 * }
-                 * elseif( on cie zablokował){
-                 *  show("Uzytkownik zablokował cię")
-                 * }
-                 * elseif(nie istnieje zadne powiązanie znaj){
-                 *  wyslij request
-                 * }
-                 * 
-                 */
                 using (NpgsqlDataReader reader = your_status.ExecuteReader())
                 {
                     while (reader.Read())
@@ -315,43 +303,50 @@ namespace WinFormsTest3
                         v_his_status = reader.GetString(0);
                     }
                 }
-                // dodaje znaj
-                /* Chce sprawdzić 
-                 * accepted i accepted - juz jestescie znajomymi
-                 * request i null = juz wyslales zaproszenie
-                 * request i request = dodaj znajomego
-                 * request i blocked = jetes zablokowany
-                 * null i request = dodaj znajomego
-                 * null i blocked = jestes zablokowany
-                 * null i null = wysyla zaproszenie
-                 * blocked i null
-                 * blocked i request
-                 * blocked i blocked 
-                 */
-                if(v_your_status == "requested" ^ v_his_status == "requested")  // teoretycznie jak złożymy requesta, a drugi użytkownik nas zablokuje, to w trakcie naszej próby dodania go do znaj przejdzie to bez problemu...
-                {                                                                       // albo 2 requesty pod rząd, to przejdzie
-
-                }
-                // ty go zablokowales
-                else if (v_your_status == "blocked")
+                if (v_your_status == "requested" &&  v_his_status == "")
                 {
-                    MessageBox.Show($"Użytkownik {userName} jest zablokowany");
+                    MessageBox.Show($"Już wysłałeś użytkownikowi {userName} zaproszenie");
                     return false;
                 }
-                // on cie zablokował
-                else if(v_his_status == "blocked")
+                else if (v_your_status == "" && v_his_status == "requested")
+                {
+                    // Zacznij dodawanie
+                    var changeYourFriendStatus = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = 'accepted' WHERE user_id = {DBconnection.user_id} AND friend_id = {friend_id}", con);
+                    var changeHisFriendStatus = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = 'accepted' WHERE user_id = {friend_id} AND friend_id = {DBconnection.user_id}", con);
+                    changeYourFriendStatus.ExecuteNonQuery();
+                    con.Close();
+                    con.Open();
+                    changeHisFriendStatus.ExecuteNonQuery();
+                    return true;
+                }
+                else if (v_your_status == "" && v_his_status == "")
+                {
+                    // Send request
+                    var sendFriendRequest = new NpgsqlCommand($"INSERT INTO view_{DBconnection.user_name}_read_friends(user_id, friend_id, status) VALUES({DBconnection.user_id}, {friend_id}, 'requested')", con);
+                    sendFriendRequest.ExecuteNonQuery();
+                    con.Close();
+                    return true;
+                }
+                else if (v_your_status == "accepted" && v_his_status == "accepted")
+                {
+                    MessageBox.Show("Już jesteście znajomymi");
+                    return false;
+                }
+                else if (v_your_status == "blocked" && v_his_status == "blocked")
+                {
+                    MessageBox.Show($"Obydwoje się zablokowaliście");
+                    return false;
+                }
+                else if (v_his_status == "blocked")
                 {
                     MessageBox.Show($"Użytkownik {userName} zablokował cię");
                     return false;
                 }
-                // nie istnieje żadne powiązanie
-                else if(v_his_status == "" && v_your_status == "")
+                else if (v_your_status == "blocked")
                 {
-                     // to samo co w "dodaje znaj"
+                    MessageBox.Show($"Najpierw odblokuj użytkownika {userName}");
+                    return false;
                 }
-
-
-                con.Close();
             }
             catch (Exception e)
             { 
