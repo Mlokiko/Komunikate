@@ -11,6 +11,7 @@ Do poprawnego działania wymagane jest:
 
 Plik projekt.sql zawiera również testową zawartość bazy danych (przykładowych użytkowników, ich statusy znajomości oraz wiadomości)
 
+<br><br><br><br><br>
 
 
 Copyright (c) <2024>, <Mlokiko>
