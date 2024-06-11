@@ -180,7 +180,7 @@ namespace WinFormsTest3
                         create_view_read_users.ExecuteNonQuery();
                         var create_view_read_friends = new NpgsqlCommand($"CREATE VIEW view_{userName}_read_friends AS SELECT * FROM friends WHERE user_id = {userID} OR friend_id = {userID}", con);
                         create_view_read_friends.ExecuteNonQuery();
-                        var grant_view_read_friends = new NpgsqlCommand($"GRANT SELECT, UPDATE, INSERT ON view_{userName}_friends TO {userName}", con);
+                        var grant_view_read_friends = new NpgsqlCommand($"GRANT SELECT, UPDATE, INSERT ON view_{userName}_read_friends TO {userName}", con);
                         grant_view_read_friends.ExecuteNonQuery();
                         var grant_on_list_messages = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_list_messages TO {userName}", con);
                         grant_on_list_messages.ExecuteNonQuery();
@@ -189,6 +189,12 @@ namespace WinFormsTest3
 
                         transaction.Commit();
                         con.Close();
+
+                        DBconnection.user_name = userName;
+                        DBconnection.user_name_lower = userName.ToLower();
+                        DBconnection.user_password = password;
+                        DBconnection.user_id = userID;
+
                         return true;
                     }
                     catch (Exception ex)
@@ -331,6 +337,7 @@ namespace WinFormsTest3
             int zmienna = 0;
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             var cmd = new NpgsqlCommand($"SELECT user_id FROM View_{DBconnection.user_name}_read_users WHERE username = '{userName}'", con);
+
             con.Open();
             NpgsqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())

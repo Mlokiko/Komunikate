@@ -324,7 +324,7 @@ values('Masz kase?', 5, 1);
 
 
 ---- USUWANIE BAZY DANYCH
--- Do poprawnego usunięcia bazy, trzeba usunąć użytkowników bazy danych (bazy danych, nie zawartości tabeli users) stworzonych w trakcie pracy programu. Na razie robie to manualnie w pgadmin, może uda się zrobić funkcje składowaną która będzie to wykonywać
+-- Do poprawnego usunięcia bazy, trzeba usunąć użytkowników bazy danych (bazy danych, nie zawartości tabeli users) stworzonych w trakcie pracy programu ALE DOPIERO PO WYKONANIU PONIŻSZYCH KOMEND. Na razie robie to manualnie w pgadmin, może uda się zrobić funkcje składowaną która będzie to wykonywać
 -- Nie ma takiego problemu przy usuwaniu usera z poziomu aplikacji, tylko przy "czystce" w trakcie testów - usuwania całej zawartości bazy
 
 
