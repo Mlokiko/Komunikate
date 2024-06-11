@@ -60,6 +60,7 @@
             // 
             passwordText.Location = new Point(500, 230);
             passwordText.Name = "passwordText";
+            passwordText.PasswordChar = '*';
             passwordText.Size = new Size(100, 23);
             passwordText.TabIndex = 3;
             // 

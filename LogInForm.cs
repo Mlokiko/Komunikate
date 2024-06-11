@@ -19,14 +19,14 @@ namespace WinFormsTest3
 
         private void logInButton_Click(object sender, EventArgs e)
         {
+            if (DBconnection.user_id != 0)
+                MessageBox.Show("Najpierw wyloguj się");
             if (userNameText.Text == "")
-            {
                 MessageBox.Show("Musisz wprowadzić nazwę użytkownika");
-            }
-            if(passwordText.Text == "")
-            {
+            if (passwordText.Text == "")
                 MessageBox.Show("Musisz wprowadzić hasło");
-            }
+            else if (passwordText.Text.Length < 5)
+                MessageBox.Show("Wprowadzone hasło jest za krótkie");
             else if (DBconnection.LogIn(userNameText.Text, passwordText.Text))
             {
                 MessageBox.Show("Poprawnie Zalogowano");
@@ -35,9 +35,7 @@ namespace WinFormsTest3
                 MessageBox.Show("Możesz teraz przejść do pisania wiadomości i odczytywania ich");
             }
             else
-            {
                 MessageBox.Show("Nie zalogowano");
-            }
         }
     }
 }

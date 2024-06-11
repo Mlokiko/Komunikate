@@ -66,9 +66,9 @@
             label4.AutoSize = true;
             label4.Location = new Point(294, 300);
             label4.Name = "label4";
-            label4.Size = new Size(395, 15);
+            label4.Size = new Size(401, 15);
             label4.TabIndex = 3;
-            label4.Text = "Standardowo apliacja automatycznie łączy się z podanym wyżej serwerem";
+            label4.Text = "Standardowo aplikacja automatycznie łączy się z podanym wyżej serwerem";
             // 
             // InfoForm
             // 

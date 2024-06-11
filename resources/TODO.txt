@@ -1,19 +1,11 @@
 PILNE
 
-- dodac komunikat gdy zalogowany u¿ytkownik próbuje stworzyæ nowego (rejestracja) zeby sie najpierw wylogowa³
-
-- naprawiæ kolejnoœæ tabulacji w formularzu write messages (user, wiadomoœæ, przycisk, a nie user, przycisk, wiadomoœæ)
-
 - u¿ytkownik/rola createuser ma superadmina - trzeba sprawdziæ jakie dok³adnie specyficznie prawa trzeba mu nadaæ, aby by³ w stanie tworzyæ userów
 
 - FRIENDS - Aktualnie sprawdzane jest czy którykolwiek z userów ma status znajomego/zablokowanego, je¿eli tak to obydwoje maj¹ ten status. request friend nie dziala/robi nic
 
 - Teoretycznie dobrym miejscem na dodanie transakcji jest proces tworzenia u¿ytkowników
 - Do dodania usuwanie z grupy w trakcie usuwania konta
-
-- Po wciœnieciu logout powinno przekierowaæ do innego okna
-
-- dodac wiadomoœæ w trakcie logowania, gdy u¿ytkownik chce ponownie zalogowaæ siê na te same konto, ze juz jest zalogowany
 
 - dodac sprawdzenie w funkcji is_friend2 czy nie probuje sie samego siebie
 
