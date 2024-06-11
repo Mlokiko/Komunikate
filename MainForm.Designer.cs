@@ -323,7 +323,7 @@
             Controls.Add(panelLeft);
             Controls.Add(panelContent);
             Controls.Add(panelTop);
-            MinimumSize = new Size(900, 550);
+            MinimumSize = new Size(900, 625);
             Name = "MainForm";
             Text = "Komunikate";
             panelTop.ResumeLayout(false);

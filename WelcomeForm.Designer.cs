@@ -58,7 +58,7 @@
             Controls.Add(ss2);
             Controls.Add(ss1);
             Name = "WelcomeForm";
-            Text = "WelcomeForm";
+            Text = "Witaj";
             ResumeLayout(false);
             PerformLayout();
         }

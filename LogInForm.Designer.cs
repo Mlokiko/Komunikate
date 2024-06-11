@@ -39,7 +39,7 @@
             // userNameLabel
             // 
             userNameLabel.AutoSize = true;
-            userNameLabel.Location = new Point(382, 233);
+            userNameLabel.Location = new Point(337, 233);
             userNameLabel.Name = "userNameLabel";
             userNameLabel.Size = new Size(112, 15);
             userNameLabel.TabIndex = 0;
@@ -48,7 +48,7 @@
             // passwordLabel
             // 
             passwordLabel.AutoSize = true;
-            passwordLabel.Location = new Point(456, 262);
+            passwordLabel.Location = new Point(411, 262);
             passwordLabel.Name = "passwordLabel";
             passwordLabel.Size = new Size(37, 15);
             passwordLabel.TabIndex = 1;
@@ -56,7 +56,7 @@
             // 
             // userNameText
             // 
-            userNameText.Location = new Point(500, 230);
+            userNameText.Location = new Point(455, 230);
             userNameText.Name = "userNameText";
             userNameText.Size = new Size(100, 23);
             userNameText.TabIndex = 2;
@@ -64,7 +64,7 @@
             // 
             // passwordText
             // 
-            passwordText.Location = new Point(500, 259);
+            passwordText.Location = new Point(455, 259);
             passwordText.Name = "passwordText";
             passwordText.PasswordChar = '*';
             passwordText.Size = new Size(100, 23);
@@ -73,7 +73,7 @@
             // 
             // logInButton
             // 
-            logInButton.Location = new Point(525, 288);
+            logInButton.Location = new Point(480, 288);
             logInButton.Name = "logInButton";
             logInButton.Size = new Size(75, 23);
             logInButton.TabIndex = 4;
@@ -83,7 +83,7 @@
             // 
             // showPasswordButton
             // 
-            showPasswordButton.Location = new Point(606, 259);
+            showPasswordButton.Location = new Point(561, 259);
             showPasswordButton.Name = "showPasswordButton";
             showPasswordButton.Size = new Size(85, 23);
             showPasswordButton.TabIndex = 5;
