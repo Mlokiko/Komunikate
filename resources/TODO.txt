@@ -1,78 +1,54 @@
-PILNE
+PILNE ----------------------------------------------------------------------------------------------------------------
 
-- Mo¿na dodaæ do tabeli friends atrybut "updated at" albo zamieniaæ "created_at" na samoaktualizuj¹c¹ siê datê... nawet lepszy pomys³
-
-- dodaæ view dla userów pozwalaj¹c patrzeæ na swoje znajomoœci - pozwoli to im na ich modyfikacje
-
-- Do sprawdzenia, i to tak porz¹dnie, znajomoœci
-
-- dodaæ trigger, sprawdzajacy czy wysylajacy nie jest aby zablokowany/niedodany do znaj? gubie sie, jest 3:00 w nocy xD
+- Dodaæ indexy, nwm gdzie, ale trzeba dla "kompletnoœci" bo to w koñcu projekt z sql'a
 
 - u¿ytkownik/rola createuser ma superadmina - trzeba sprawdziæ jakie dok³adnie specyficznie prawa trzeba mu nadaæ, aby by³ w stanie tworzyæ userów
 
-- FRIENDS - Aktualnie sprawdzane jest czy którykolwiek z userów ma status znajomego/zablokowanego, je¿eli tak to obydwoje maj¹ ten status. request friend nie dziala/robi nic
+- dodac sprawdzenie w funkcji is_friend(2) czy nie probuje sie samego siebie - albo nie, bo sama tabela na to nie pozwoli... ogarn¹æ jakie b³edy sie wtedy pojawi¹ i jak je obs³u¿yæ...
 
-- Teoretycznie dobrym miejscem na dodanie transakcji jest proces tworzenia u¿ytkowników
-- Do dodania usuwanie z grupy w trakcie usuwania konta
+- Testy wszystkich funkcji, czy jakiœ b³¹d siê nie wkrad³
 
-- dodac sprawdzenie w funkcji is_friend2 czy nie probuje sie samego siebie
+MNIEJ PILNE  ----------------------------------------------------------------------------------------------------------------
 
-- zamieniæ niepotrzebnie powtarzaj¹cy sie kod na funkcje - dokladniej sprawdzaj¹cy jakie jest user_id w bazie danych
-
-MNIEJ PILNE
-
+- Mo¿na dodaæ do tabeli friends atrybut "updated at" albo zamieniaæ "created_at" na samoaktualizuj¹c¹ siê datê... nawet lepszy pomys³
 - Dodaæ zabezpieczenie nie pozwalaj¹ce userom na tworzenie u¿ytkownika o nazwie postgres, usercreator, testconnection itp.
+- Ogarn¹æ ³adne wyœwietlanie wiadomoœci
+- Ogarn¹c przechowywanie haszy hase³ u¿ytkowników, a nie w plain text
 
-- Do zamiany wszedzie gdzie wpisywane jest haslo textbox na szyfrowan¹ wersje
-- ogarn¹æ ³adne wyœwietlanie wiadomoœci
-- ogarn¹c przechowywanie haszy hase³ u¿ytkowników, a nie w plain text
-
-Do poprawy
+DO POPRAWY  ----------------------------------------------------------------------------------------------------------------
 
 - U¿ytkownicy (w sensie w bazie danych, a nie zapisanych w tabelach) mogliby rozpoczynaæ siê na np. user_NAZWA, mog³o by to pomóc przy ich usuwaniu
 
 JAK SIE UDA
 
-- ogarn¹æ ikony - prawid³owy rozmiar, u³o¿enie
 - ogarn¹æ UI:
-  
+
+  - ogarn¹æ ikony - prawid³owy rozmiar, u³o¿enie
   - przemieszczanie siê elementów przy zmianie rozmiarów okna
-  - prawid³owe min rozmiar okna
+  - prawid³owe rozmiar okna - min, max, startuj¹cy
   - kolorowe przyciski, inaczej wygladajace pola tekstowe - zeby bylo modern, a nie windows ME style
-  - kolorowy pasek z tytulem okna i przyciskami zamknij/fullscreen/minimalizuj
+  - kolorowy pasek z tytulem okna i przyciskami zamknij/fullscreen/minimalizuj - wy³¹czyæ systemowy i zrobiæ samemu?
   - opcja w³¹czenia czarnego motywu?
-  - jêzyk - albo wszystko po angielsku, albo po polsku
+  - jêzyk - albo wszystko po angielsku, albo po polsku?
   - opcja zmiany jêzyka na ang/pol w ca³ej aplikacji?
   
 - przy wprowadzaniu gdziekolwiek loginu/has³a/jakichkolwiek danych, dodaæ opcjê przechodzenia dalej enterem
-- pododawaæ progres bar (np. przy logowaniu. wczytywaniu wiadomoœci) - count(wiadomosci) jako max, progresBar++ przy wczytywaniu z bazy danych
+- dodaæ progres bar (np. przy logowaniu. wczytywaniu wiadomoœci) - count(wiadomosci) jako max, progresBar++ przy wczytywaniu z bazy danych
 - dodaæ opcjê odczytywania wiadomoœci z danego przedzia³u czasowego
 - dodaæ czyszczenie pól (username haslo) gdy nie uda siê logowanie itp.
-
-
-potrzebuje stworzyc nowy formularz w którym bêd¹ opcje:
-- poka¿ status znajomych (czy znajomi, czy zablokowani)
-- dodaj znajomych (wysylanie requesta o dodanie do znajomych)
-- zablokuj/usun znajomego
-- poka¿ nowe proœby o dodanie do znajomego
-
-
--- dodaæ transakcje - przed wpisywaniem/modyfikowaniem wiadomosci powinna byæ rozpoczynana nowa transakcja
-
 
 
 - ogarn¹æ czaty grupowe
 - ogarn¹æ wysylanie wiadomoœci z obrazami/muzyk¹?
 
 
-dodatkowy formularz z group chat:
-- poka¿ czaty
-- usun sie z danego czatu
-- usun inn¹ osobe z czatu
-
-
-zamiast log IN, Log Out, Register zrobiæ przycisk User Account w którym bêdzie:
-- Log In
-- Log Out
-- Register
-- Delete account
+- zamiast log IN, Log Out, Register zrobiæ przycisk User Account w którym bêdzie:
+  - Log In
+  - Log Out
+  - Register
+  - Delete account
+  
+  
+  
+  
+  
