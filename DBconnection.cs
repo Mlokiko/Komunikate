@@ -279,12 +279,78 @@ namespace WinFormsTest3
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
-                // TO DO
                 int friend_id = NameToId(userName);
+                var your_status = new NpgsqlCommand($"SELECT status FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {DBconnection.user_id} AND friend_id = {friend_id}", con);
+                var his_status = new NpgsqlCommand($"SELECT status FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {friend_id} AND friend_id = {DBconnection.user_id}", con);
 
                 con.Open();
-                var cmd = new NpgsqlCommand($"", con);
-                cmd.ExecuteNonQuery();
+                string v_your_status = "";
+                string v_his_status = "";
+
+                /* if (request do znaj){
+                 *  zamien swoj i jego status na znaj
+                 * }
+                 * elseif( ty go zablokowałes){
+                 *  show("Najpierw odblokuj użytkownika")
+                 * }
+                 * elseif( on cie zablokował){
+                 *  show("Uzytkownik zablokował cię")
+                 * }
+                 * elseif(nie istnieje zadne powiązanie znaj){
+                 *  wyslij request
+                 * }
+                 * 
+                 */
+                using (NpgsqlDataReader reader = your_status.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        v_your_status = reader.GetString(0);
+                    }
+                }
+                using (NpgsqlDataReader reader = his_status.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        v_his_status = reader.GetString(0);
+                    }
+                }
+                // dodaje znaj
+                /* Chce sprawdzić 
+                 * accepted i accepted - juz jestescie znajomymi
+                 * request i null = juz wyslales zaproszenie
+                 * request i request = dodaj znajomego
+                 * request i blocked = jetes zablokowany
+                 * null i request = dodaj znajomego
+                 * null i blocked = jestes zablokowany
+                 * null i null = wysyla zaproszenie
+                 * blocked i null
+                 * blocked i request
+                 * blocked i blocked 
+                 */
+                if(v_your_status == "requested" ^ v_his_status == "requested")  // teoretycznie jak złożymy requesta, a drugi użytkownik nas zablokuje, to w trakcie naszej próby dodania go do znaj przejdzie to bez problemu...
+                {                                                                       // albo 2 requesty pod rząd, to przejdzie
+
+                }
+                // ty go zablokowales
+                else if (v_your_status == "blocked")
+                {
+                    MessageBox.Show($"Użytkownik {userName} jest zablokowany");
+                    return false;
+                }
+                // on cie zablokował
+                else if(v_his_status == "blocked")
+                {
+                    MessageBox.Show($"Użytkownik {userName} zablokował cię");
+                    return false;
+                }
+                // nie istnieje żadne powiązanie
+                else if(v_his_status == "" && v_your_status == "")
+                {
+                     // to samo co w "dodaje znaj"
+                }
+
+
                 con.Close();
             }
             catch (Exception e)
@@ -317,12 +383,13 @@ namespace WinFormsTest3
             try
             {
                 bool friend = false;
+                // SPRAWDZIC CZY NA PEWNO DZIAŁA, CZY ZWRACA PRAWIDŁOWĄ WARTOŚĆ
                 var checkIsFriend = new NpgsqlCommand($"SELECT EXISTS(SELECT 1 FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {DBconnection.user_id} AND friend_id = {NameToId(userName)}) UNION SELECT EXISTS(SELECT 1 FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {NameToId(userName)} AND friend_id = {DBconnection.user_id})", con);
 
                 con.Open();
                 using (NpgsqlDataReader reader = checkIsFriend.ExecuteReader())
                 {
-                    while (reader.Read())           // Nie mam pojęcia czemu w while to działa a poza nie... niech ktoś to sprawdzi, zastanawia mnie to
+                    while (reader.Read())
                     {
                         friend = reader.GetBoolean(0);
                     }
