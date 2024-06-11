@@ -7,6 +7,7 @@ namespace WinFormsTest3
         public MainForm()
         {
             InitializeComponent();
+            OpenChildForm(new WelcomeForm());
         }
         public void OpenChildForm(Form childForm)
         {
@@ -54,7 +55,7 @@ namespace WinFormsTest3
                 currentUserText.Text = "Nie po³¹czono";
                 statusText.Text = "Nie po³¹czono";
                 MessageBox.Show("Wylogowano");
-                //OpenChildForm(new ChangeServerForm());
+                OpenChildForm(new WelcomeForm());
             }
         }
 
@@ -75,6 +76,9 @@ namespace WinFormsTest3
 
         private void registerButton_Click(object sender, EventArgs e)
         {
+            if (DBconnection.user_id != 0)
+                MessageBox.Show("Najpierw wyloguj siê");
+            else
             OpenChildForm(new RegisterForm());
         }
 

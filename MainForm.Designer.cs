@@ -32,10 +32,8 @@
             panelTop = new Panel();
             panelLogo = new Panel();
             LogoLabel = new Label();
-            panelContent = new Panel();
-            ss2 = new Label();
-            ss1 = new Label();
             panelLeft = new Panel();
+            friendsButton = new Button();
             infoButton = new Button();
             settingsButton = new Button();
             registerButton = new Button();
@@ -47,10 +45,9 @@
             logInButton = new Button();
             writeMessagesButton = new Button();
             readMessagesButton = new Button();
-            friendsButton = new Button();
+            panelContent = new Panel();
             panelTop.SuspendLayout();
             panelLogo.SuspendLayout();
-            panelContent.SuspendLayout();
             panelLeft.SuspendLayout();
             SuspendLayout();
             // 
@@ -98,34 +95,6 @@
             LogoLabel.TabIndex = 0;
             LogoLabel.Text = "Komunikate";
             // 
-            // panelContent
-            // 
-            panelContent.Controls.Add(ss2);
-            panelContent.Controls.Add(ss1);
-            panelContent.Location = new Point(199, 98);
-            panelContent.Margin = new Padding(0);
-            panelContent.Name = "panelContent";
-            panelContent.Size = new Size(998, 580);
-            panelContent.TabIndex = 7;
-            // 
-            // ss2
-            // 
-            ss2.AutoSize = true;
-            ss2.Location = new Point(423, 295);
-            ss2.Name = "ss2";
-            ss2.Size = new Size(145, 15);
-            ss2.TabIndex = 1;
-            ss2.Text = "Aby rozpocząć, zaloguj się";
-            // 
-            // ss1
-            // 
-            ss1.AutoSize = true;
-            ss1.Location = new Point(380, 271);
-            ss1.Name = "ss1";
-            ss1.Size = new Size(239, 15);
-            ss1.TabIndex = 0;
-            ss1.Text = "Witaj w prostym komunikatorze tekstowym!";
-            // 
             // panelLeft
             // 
             panelLeft.BackColor = Color.FromArgb(44, 62, 80);
@@ -147,6 +116,24 @@
             panelLeft.Name = "panelLeft";
             panelLeft.Size = new Size(200, 581);
             panelLeft.TabIndex = 8;
+            // 
+            // friendsButton
+            // 
+            friendsButton.BackColor = Color.FromArgb(52, 73, 94);
+            friendsButton.BackgroundImageLayout = ImageLayout.None;
+            friendsButton.Dock = DockStyle.Top;
+            friendsButton.FlatAppearance.BorderSize = 0;
+            friendsButton.FlatStyle = FlatStyle.Flat;
+            friendsButton.ForeColor = Color.White;
+            friendsButton.ImageAlign = ContentAlignment.TopLeft;
+            friendsButton.Location = new Point(0, 350);
+            friendsButton.Margin = new Padding(0);
+            friendsButton.Name = "friendsButton";
+            friendsButton.Size = new Size(200, 50);
+            friendsButton.TabIndex = 17;
+            friendsButton.Text = "Friends";
+            friendsButton.UseVisualStyleBackColor = false;
+            friendsButton.Click += friendsButton_Click;
             // 
             // infoButton
             // 
@@ -320,23 +307,13 @@
             readMessagesButton.UseVisualStyleBackColor = false;
             readMessagesButton.Click += readMessagesButton_Click;
             // 
-            // friendsButton
+            // panelContent
             // 
-            friendsButton.BackColor = Color.FromArgb(52, 73, 94);
-            friendsButton.BackgroundImageLayout = ImageLayout.None;
-            friendsButton.Dock = DockStyle.Top;
-            friendsButton.FlatAppearance.BorderSize = 0;
-            friendsButton.FlatStyle = FlatStyle.Flat;
-            friendsButton.ForeColor = Color.White;
-            friendsButton.ImageAlign = ContentAlignment.TopLeft;
-            friendsButton.Location = new Point(0, 350);
-            friendsButton.Margin = new Padding(0);
-            friendsButton.Name = "friendsButton";
-            friendsButton.Size = new Size(200, 50);
-            friendsButton.TabIndex = 17;
-            friendsButton.Text = "Friends";
-            friendsButton.UseVisualStyleBackColor = false;
-            friendsButton.Click += friendsButton_Click;
+            panelContent.Location = new Point(199, 98);
+            panelContent.Margin = new Padding(0);
+            panelContent.Name = "panelContent";
+            panelContent.Size = new Size(998, 580);
+            panelContent.TabIndex = 7;
             // 
             // MainForm
             // 
@@ -353,8 +330,6 @@
             panelTop.PerformLayout();
             panelLogo.ResumeLayout(false);
             panelLogo.PerformLayout();
-            panelContent.ResumeLayout(false);
-            panelContent.PerformLayout();
             panelLeft.ResumeLayout(false);
             panelLeft.PerformLayout();
             ResumeLayout(false);
@@ -366,7 +341,6 @@
         private Label currentUserLabel;
         private Panel panel1;
         private Panel panelTop;
-        private Panel panelContent;
         private Panel panelLeft;
         private Button logInButton;
         private Button writeMessagesButton;
@@ -374,8 +348,6 @@
         private Panel panelLogo;
         private Label LogoLabel;
         private Label statusLabel;
-        private Label ss2;
-        private Label ss1;
         public Label statusText;
         public Label currentUserText;
         private Button logoutButton;
@@ -383,5 +355,6 @@
         private Button settingsButton;
         private Button registerButton;
         private Button friendsButton;
+        private Panel panelContent;
     }
 }

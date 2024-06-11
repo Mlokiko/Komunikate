@@ -58,14 +58,14 @@
             userNameText.Location = new Point(344, 101);
             userNameText.Name = "userNameText";
             userNameText.Size = new Size(199, 23);
-            userNameText.TabIndex = 4;
+            userNameText.TabIndex = 3;
             // 
             // sendButton
             // 
             sendButton.Location = new Point(698, 416);
             sendButton.Name = "sendButton";
             sendButton.Size = new Size(75, 23);
-            sendButton.TabIndex = 6;
+            sendButton.TabIndex = 5;
             sendButton.Text = "Wyślij";
             sendButton.UseVisualStyleBackColor = true;
             sendButton.Click += sendButton_Click;
@@ -75,7 +75,7 @@
             messageContentText.Location = new Point(344, 151);
             messageContentText.Name = "messageContentText";
             messageContentText.Size = new Size(429, 233);
-            messageContentText.TabIndex = 7;
+            messageContentText.TabIndex = 4;
             messageContentText.Text = "";
             // 
             // WriteMessagesForm

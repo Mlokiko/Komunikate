@@ -42,7 +42,7 @@
             deleteFriendButton.Location = new Point(482, 328);
             deleteFriendButton.Name = "deleteFriendButton";
             deleteFriendButton.Size = new Size(136, 23);
-            deleteFriendButton.TabIndex = 0;
+            deleteFriendButton.TabIndex = 7;
             deleteFriendButton.Text = "Usuń znajomego";
             deleteFriendButton.UseVisualStyleBackColor = true;
             // 
@@ -60,7 +60,7 @@
             addFriendButton.Location = new Point(482, 270);
             addFriendButton.Name = "addFriendButton";
             addFriendButton.Size = new Size(136, 23);
-            addFriendButton.TabIndex = 2;
+            addFriendButton.TabIndex = 5;
             addFriendButton.Text = "Dodaj znajomego";
             addFriendButton.UseVisualStyleBackColor = true;
             addFriendButton.Click += addFriendButton_Click;
@@ -70,7 +70,7 @@
             blockFriendButton.Location = new Point(482, 299);
             blockFriendButton.Name = "blockFriendButton";
             blockFriendButton.Size = new Size(136, 23);
-            blockFriendButton.TabIndex = 3;
+            blockFriendButton.TabIndex = 6;
             blockFriendButton.Text = "Zablokuj znajomego";
             blockFriendButton.UseVisualStyleBackColor = true;
             // 
@@ -89,7 +89,7 @@
             userNameText.Location = new Point(482, 190);
             userNameText.Name = "userNameText";
             userNameText.Size = new Size(136, 23);
-            userNameText.TabIndex = 5;
+            userNameText.TabIndex = 2;
             // 
             // infoLabel
             // 
@@ -97,7 +97,7 @@
             infoLabel.Location = new Point(482, 216);
             infoLabel.Name = "infoLabel";
             infoLabel.Size = new Size(151, 15);
-            infoLabel.TabIndex = 6;
+            infoLabel.TabIndex = 3;
             infoLabel.Text = "Wielkość liter ma znaczenie";
             // 
             // FriendsForm
