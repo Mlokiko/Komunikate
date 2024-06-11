@@ -33,6 +33,7 @@
             userNameText = new TextBox();
             passwordText = new TextBox();
             logInButton = new Button();
+            showPasswordButton = new Button();
             SuspendLayout();
             // 
             // userNameLabel
@@ -80,11 +81,23 @@
             logInButton.UseVisualStyleBackColor = true;
             logInButton.Click += logInButton_Click;
             // 
+            // showPasswordButton
+            // 
+            showPasswordButton.Location = new Point(606, 259);
+            showPasswordButton.Name = "showPasswordButton";
+            showPasswordButton.Size = new Size(85, 23);
+            showPasswordButton.TabIndex = 5;
+            showPasswordButton.Text = "Pokaż hasło";
+            showPasswordButton.UseVisualStyleBackColor = true;
+            showPasswordButton.MouseDown += showPasswordButton_MouseDown;
+            showPasswordButton.MouseUp += showPasswordButton_MouseUp;
+            // 
             // LogInForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 541);
+            Controls.Add(showPasswordButton);
             Controls.Add(userNameText);
             Controls.Add(logInButton);
             Controls.Add(userNameLabel);
@@ -103,5 +116,6 @@
         private TextBox userNameText;
         private TextBox passwordText;
         private Button logInButton;
+        private Button showPasswordButton;
     }
 }

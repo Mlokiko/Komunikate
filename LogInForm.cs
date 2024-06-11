@@ -37,5 +37,16 @@ namespace WinFormsTest3
             else
                 MessageBox.Show("Nie zalogowano");
         }
+        private void showPasswordButton_MouseDown(object sender, MouseEventArgs e)
+        {
+            //passwordText.UseSystemPasswordChar = false;
+            passwordText.PasswordChar = '\0';
+        }
+
+        private void showPasswordButton_MouseUp(object sender, MouseEventArgs e)
+        {
+            //passwordText.UseSystemPasswordChar = true;
+            passwordText.PasswordChar = '*';
+        }
     }
 }

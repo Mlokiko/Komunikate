@@ -19,7 +19,7 @@ namespace WinFormsTest3
 
         private void confirmButton_Click(object sender, EventArgs e)
         {
-            if(DBconnection.Register(userNameText.Text, passwordText.Text, nameText.Text, surnameText.Text))
+            if (DBconnection.Register(userNameText.Text, passwordText.Text, nameText.Text, surnameText.Text))
             {
                 MessageBox.Show("Pomyślnie utworzono użytkownika");
             }
@@ -27,6 +27,18 @@ namespace WinFormsTest3
             {
                 MessageBox.Show("Nie utworzono użytkownika");
             }
+        }
+
+        private void showPasswordButton_MouseDown(object sender, MouseEventArgs e)
+        {
+            passwordText.PasswordChar = '\0';
+
+        }
+
+        private void showPasswordButton_MouseUp(object sender, MouseEventArgs e)
+        {
+            passwordText.PasswordChar = '*';
+
         }
     }
 }

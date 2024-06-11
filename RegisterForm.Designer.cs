@@ -38,6 +38,7 @@
             surnameLabel = new Label();
             confirmButton = new Button();
             passwordRequirementLabel = new Label();
+            showPasswordButton = new Button();
             SuspendLayout();
             // 
             // userNameLabel
@@ -75,7 +76,7 @@
             // 
             // nameText
             // 
-            nameText.Location = new Point(500, 259);
+            nameText.Location = new Point(500, 274);
             nameText.Name = "nameText";
             nameText.Size = new Size(100, 23);
             nameText.TabIndex = 5;
@@ -83,7 +84,7 @@
             // nameLabel
             // 
             nameLabel.AutoSize = true;
-            nameLabel.Location = new Point(464, 262);
+            nameLabel.Location = new Point(464, 277);
             nameLabel.Name = "nameLabel";
             nameLabel.Size = new Size(30, 15);
             nameLabel.TabIndex = 4;
@@ -91,7 +92,7 @@
             // 
             // surnameText
             // 
-            surnameText.Location = new Point(500, 288);
+            surnameText.Location = new Point(500, 303);
             surnameText.Name = "surnameText";
             surnameText.Size = new Size(100, 23);
             surnameText.TabIndex = 7;
@@ -99,7 +100,7 @@
             // surnameLabel
             // 
             surnameLabel.AutoSize = true;
-            surnameLabel.Location = new Point(437, 291);
+            surnameLabel.Location = new Point(437, 306);
             surnameLabel.Name = "surnameLabel";
             surnameLabel.Size = new Size(57, 15);
             surnameLabel.TabIndex = 6;
@@ -107,7 +108,7 @@
             // 
             // confirmButton
             // 
-            confirmButton.Location = new Point(525, 317);
+            confirmButton.Location = new Point(525, 332);
             confirmButton.Name = "confirmButton";
             confirmButton.Size = new Size(75, 23);
             confirmButton.TabIndex = 8;
@@ -118,17 +119,29 @@
             // passwordRequirementLabel
             // 
             passwordRequirementLabel.AutoSize = true;
-            passwordRequirementLabel.Location = new Point(606, 233);
+            passwordRequirementLabel.Location = new Point(500, 256);
             passwordRequirementLabel.Name = "passwordRequirementLabel";
             passwordRequirementLabel.Size = new Size(277, 15);
             passwordRequirementLabel.TabIndex = 9;
             passwordRequirementLabel.Text = "Hasło musi zawierać min 5 znaków, max 19 znaków";
+            // 
+            // showPasswordButton
+            // 
+            showPasswordButton.Location = new Point(606, 230);
+            showPasswordButton.Name = "showPasswordButton";
+            showPasswordButton.Size = new Size(86, 23);
+            showPasswordButton.TabIndex = 10;
+            showPasswordButton.Text = "Pokaż hasło";
+            showPasswordButton.UseVisualStyleBackColor = true;
+            showPasswordButton.MouseDown += showPasswordButton_MouseDown;
+            showPasswordButton.MouseUp += showPasswordButton_MouseUp;
             // 
             // RegisterForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 541);
+            Controls.Add(showPasswordButton);
             Controls.Add(passwordRequirementLabel);
             Controls.Add(confirmButton);
             Controls.Add(surnameText);
@@ -157,5 +170,6 @@
         private Label surnameLabel;
         private Button confirmButton;
         private Label passwordRequirementLabel;
+        private Button showPasswordButton;
     }
 }
