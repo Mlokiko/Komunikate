@@ -1,5 +1,7 @@
 PILNE
 
+- Mo¿na dodaæ do tabeli friends atrybut "updated at" albo zamieniaæ "created_at" na samoaktualizuj¹c¹ siê datê... nawet lepszy pomys³
+
 - dodaæ view dla userów pozwalaj¹c patrzeæ na swoje znajomoœci - pozwoli to im na ich modyfikacje
 
 - Do sprawdzenia, i to tak porz¹dnie, znajomoœci

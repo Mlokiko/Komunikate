@@ -178,10 +178,14 @@ namespace WinFormsTest3
                         create_view_list_messages.ExecuteNonQuery();
                         var create_view_read_users = new NpgsqlCommand($"CREATE VIEW view_{userName}_read_users AS SELECT user_id, username from users", con);
                         create_view_read_users.ExecuteNonQuery();
-                        var create_grant_on_list_messages = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_list_messages TO {userName}", con);
-                        create_grant_on_list_messages.ExecuteNonQuery();
-                        var create_grant_on_read_users = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_read_users TO {userName}", con);
-                        create_grant_on_read_users.ExecuteNonQuery();
+                        var create_view_read_friends = new NpgsqlCommand($"CREATE VIEW view_{userName}_read_friends AS SELECT * FROM friends WHERE user_id = {userID} OR friend_id = {userID}", con);
+                        create_view_read_friends.ExecuteNonQuery();
+                        var grant_view_read_friends = new NpgsqlCommand($"GRANT SELECT, UPDATE, INSERT ON view_{userName}_friends TO {userName}", con);
+                        grant_view_read_friends.ExecuteNonQuery();
+                        var grant_on_list_messages = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_list_messages TO {userName}", con);
+                        grant_on_list_messages.ExecuteNonQuery();
+                        var grant_on_read_users = new NpgsqlCommand($"GRANT SELECT ON view_{userName}_read_users TO {userName}", con);
+                        grant_on_read_users.ExecuteNonQuery();
 
                         transaction.Commit();
                         con.Close();
@@ -268,6 +272,7 @@ namespace WinFormsTest3
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
+                // TO DO
                 int friend_id = NameToId(userName);
 
                 con.Open();
@@ -288,9 +293,8 @@ namespace WinFormsTest3
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
-                // UPDATE 0 - znależć sposób jak to wykorzystać
                 con.Open();
-                var cmd = new NpgsqlCommand($"UPDATE friends SET status = 'blocked' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
+                var cmd = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = 'blocked' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
                 cmd.ExecuteNonQuery();
                 return true;
             }
@@ -305,6 +309,7 @@ namespace WinFormsTest3
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
+                // TO DO
                 con.Open();
                 var cmd = new NpgsqlCommand($"", con);
                 cmd.ExecuteNonQuery();
