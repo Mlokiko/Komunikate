@@ -76,35 +76,45 @@ RETURN v_id;
 END $$ LANGUAGE PLPGSQL SECURITY DEFINER;
 
 -- Dałoby rade przekształcić funkcjse is_friend() na taką że współpracowałaby z triggerem i dałoby się ją normalnie wywołać, ale stworzyłem osobną funkcję
--- Funkcja zwraca 0 gdy nie jest sie znajomym, 1 gdy jest sie w fazie request, 2 gdy jest sie zablokowanym, 3 gdy jest sie znajomym
+-- Funkcja zwraca:
+-- 0 gdy nie jest sie znajomym
+-- 1 aktywny użytkownik wysłał zaproszenie do znajomych
+-- 2 gdy ten drugi użytkownik wysłał zaproszenie
+-- 3 aktywny użytkownik zablokował użytkownika
+-- 4 gdy ten drugi użytkownik zablokował nas
+-- 5 gdy jest się znajomymi
 
 CREATE OR REPLACE FUNCTION is_friend2(v_sender_id INTEGER, v_receiver VARCHAR) RETURNS INTEGER LANGUAGE PLPGSQL SECURITY DEFINER AS $$
 DECLARE
 v_receiver_id INTEGER;
-v_status VARCHAR;
-v_status_2 VARCHAR;
+v_your_status VARCHAR;
+v_his_status VARCHAR;
 BEGIN
 
 v_receiver_id := username_to_id(v_receiver);
 
 SELECT status
-INTO v_status
+INTO v_your_status
 FROM friends
 WHERE user_id = v_sender_id AND friend_id = v_receiver_id;
 
 SELECT status
-INTO v_status_2
+INTO v_his_status
 FROM friends
 WHERE user_id = v_receiver_id AND friend_id = v_sender_id;
 
-IF(v_status IS NULL AND v_status_2 IS NULL) THEN
+IF(v_your_status IS NULL AND v_his_status IS NULL)  THEN
 RETURN 0;
-ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
+ELSEIF(v_your_status = 'requested') THEN
 RETURN 1;
-ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
+ELSEIF(v_his_status = 'requested') THEN
 RETURN 2;
-END IF;
+ELSEIF(v_your_status = 'blocked') THEN
 RETURN 3;
+ELSEIF(v_his_status = 'blocked') THEN
+RETURN 4;
+END IF;
+RETURN 5;
 END $$;
 
 -- Trigger sprawdzający czy użytkownicy są znajomymi
@@ -112,26 +122,30 @@ END $$;
 
 CREATE OR REPLACE FUNCTION is_friend() RETURNS trigger AS $$
 DECLARE
-v_status varchar;
-v_status_2 varchar;
+v_your_status varchar;
+v_his_status varchar;
 BEGIN
 
 SELECT status
-INTO v_status
+INTO v_your_status
 FROM friends
 WHERE user_id = NEW.sender_id AND friend_id = NEW.receiver_id;
 
 SELECT status
-INTO v_status_2
+INTO v_his_status
 FROM friends
 WHERE user_id = NEW.receiver_id AND friend_id = NEW.sender_id;
 
-IF(v_status IS NULL AND v_status_2 IS NULL)  THEN
+IF(v_your_status IS NULL AND v_his_status IS NULL)  THEN
 RAISE EXCEPTION 'Nie jesteś znajomym użytkownika';
-ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
+ELSEIF(v_your_status = 'requested') THEN
 RAISE EXCEPTION 'Użytkownik nie dodał cię jeszcze do znajomych';
-ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
-RAISE EXCEPTION 'Użytkownik zablokował cię (lub ty go)';
+ELSEIF(v_his_status = 'requested') THEN
+RAISE EXCEPTION 'Użytkownik wysłał zaproszenie do znajomych';
+ELSEIF(v_your_status = 'blocked') THEN
+RAISE EXCEPTION 'Zablokowałeś użytkownika';
+ELSEIF(v_his_status = 'blocked') THEN
+RAISE EXCEPTION 'Użytkownik zablokował cię';
 END IF;
 RETURN NEW;
 END;
@@ -260,13 +274,23 @@ ALTER GROUP user_group ADD USER Kapa;
 insert into friends(user_id, friend_id, status)
 values(1, 2, 'accepted');
 insert into friends(user_id, friend_id, status)
+values(2, 1, 'accepted');
+insert into friends(user_id, friend_id, status)
+values(2, 3, 'requested');
+insert into friends(user_id, friend_id, status)
+values(2, 1, 'blocked');
+
+
+insert into friends(user_id, friend_id, status)
 values(5, 6, 'accepted');
+insert into friends(user_id, friend_id, status)
+values(6, 5, 'accepted');
 insert into friends(user_id, friend_id, status)
 values(1, 5, 'accepted');
 insert into friends(user_id, friend_id, status)
-values(1, 3, 'blocked');
+values(5, 1, 'accepted');
 insert into friends(user_id, friend_id, status)
-values(2, 3, 'blocked');
+values(1, 3, 'blocked');
 insert into friends(user_id, friend_id, status)
 values(1, 4, 'requested');
 
@@ -344,52 +368,88 @@ DROP USER orion;
 DROP USER kapa;
 
 ------------------------------------------
+-- Funkcje przed modyfikacją - aktualnie sprawdzają czy którykolwiek z userów jest znajomym/zablokowanym
 
--- Moje stare podejście do tematu - zapomniałem że NEW w funkcji triggera jest typem rekordowym. Może można to wykorzystać do czegoś innego, ale nie sprawdzałem czy działa
+CREATE OR REPLACE FUNCTION username_to_id(IN v_username varchar) RETURNS INTEGER AS $$
+DECLARE
+v_id INTEGER;
+BEGIN
 
--- CREATE FUNCTION username_to_id(v_username varchar) RETURNS INTEGER PLPGSQL as $$
--- DECLARE
--- v_id integer;
--- BEGIN
+SELECT user_id 
+INTO v_id
+FROM users
+WHERE username = v_username;
 
--- SELECT user_id 
--- INTO v_id
--- FROM users
--- WHERE username = v_username;
+IF NOT FOUND THEN
+	RAISE EXCEPTION 'Nie znaleziono id użytkownika o nazwie: (%)', v_username;
+END IF;
 
--- IF NOT FOUND THEN
--- 	RAISE NOTICE 'Nie znaleziono id użytkownika o nazwie: (%)', v_username;
--- END IF;
+RETURN v_id;
+END $$ LANGUAGE PLPGSQL SECURITY DEFINER;
 
--- return v_id;
--- END $$;
+-- Dałoby rade przekształcić funkcjse is_friend() na taką że współpracowałaby z triggerem i dałoby się ją normalnie wywołać, ale stworzyłem osobną funkcję
+-- Funkcja zwraca 0 gdy nie jest sie znajomym, 1 gdy jest sie w fazie request, 2 gdy jest sie zablokowanym, 3 gdy jest sie znajomym
 
--- CREATE FUNCTION is_friend2(v_sender_id INTEGER, v_receiver VARCHAR) LANGUAGE PLPGSQL AS $$
--- DECLARE
--- v_receiver_id integer;
--- v_status varchar;
--- BEGIN
+CREATE OR REPLACE FUNCTION is_friend2(v_sender_id INTEGER, v_receiver VARCHAR) RETURNS INTEGER LANGUAGE PLPGSQL SECURITY DEFINER AS $$
+DECLARE
+v_receiver_id INTEGER;
+v_status VARCHAR;
+v_status_2 VARCHAR;
+BEGIN
 
--- v_receiver_id = CALL username_to_id(v_receiver);
+v_receiver_id := username_to_id(v_receiver);
 
--- SELECT status
--- INTO v_status
--- FROM friends
--- WHERE user_id = v_sender_id AND friend_id = v_receiver_id;
+SELECT status
+INTO v_status
+FROM friends
+WHERE user_id = v_sender_id AND friend_id = v_receiver_id;
 
--- IF(v_status IS NULL)      -- albo == '', ale musze sprawdzić
--- EXCEPTION 'Nie jesteś znajomym użytkownika (%)', receiver;
--- ELSE IF(v_status == 'requested')
--- EXCEPTION "Użytkownik (%) nie dodał cię jeszcze do znajomych", receiver;
--- ELSE IF(v_status == 'blocked')
--- EXCEPTION "Użytkownik (%) zablokował cię", receiver;
--- END IF;
--- RAICE NOTICE 'jesteście znajomymi';
--- END $$;
+SELECT status
+INTO v_status_2
+FROM friends
+WHERE user_id = v_receiver_id AND friend_id = v_sender_id;
 
+IF(v_status IS NULL AND v_status_2 IS NULL) THEN
+RETURN 0;
+ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
+RETURN 1;
+ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
+RETURN 2;
+END IF;
+RETURN 3;
+END $$;
+
+-- Trigger sprawdzający czy użytkownicy są znajomymi
+-- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość, jest zrobione po stronie aplikacji
+
+CREATE OR REPLACE FUNCTION is_friend() RETURNS trigger AS $$
+DECLARE
+v_status varchar;
+v_status_2 varchar;
+BEGIN
+
+SELECT status
+INTO v_status
+FROM friends
+WHERE user_id = NEW.sender_id AND friend_id = NEW.receiver_id;
+
+SELECT status
+INTO v_status_2
+FROM friends
+WHERE user_id = NEW.receiver_id AND friend_id = NEW.sender_id;
+
+IF(v_status IS NULL AND v_status_2 IS NULL)  THEN
+RAISE EXCEPTION 'Nie jesteś znajomym użytkownika';
+ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
+RAISE EXCEPTION 'Użytkownik nie dodał cię jeszcze do znajomych';
+ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
+RAISE EXCEPTION 'Użytkownik zablokował cię (lub ty go)';
+END IF;
+RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL SECURITY DEFINER;			-- SECURITY DEFINER pozwala na wykonanie funkcji z prawami właściciela funkcji (superuser tworzący bazę danych), a nie użytkownika używającego funkcji.
 ------------------------------------------
 
--- GRANT CONNECT ON DATABASE my_database TO my_user; teoretycznie to powinno pomóc, ale nic nie daje...
 -- dobra, wiadomość dla mnie, userzy w postgresie ZAWSZE są z małej litery...
 
 -- te uprawnienia na dole są potrzebne żeby można było wysyłać wiadomości
@@ -421,7 +481,7 @@ DROP USER kapa;
 -- GRANT SELECT ON View_{username}_read_users TO {username};
 
 
----------------------------------------
+--------------------------------------- Kiedyś do zrobienia
 -- CREATE TABLE groups(
 -- 	id SERIAL,
 -- 	group_name TEXT,

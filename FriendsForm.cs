@@ -25,16 +25,22 @@ namespace WinFormsTest3
                     MessageBox.Show($"Nie jesteś znajomym z {userNameText.Text}");
                     break;
                 case 1:
-                    MessageBox.Show($"Jesteś w fazie \"reguest\" z {userNameText.Text}");
+                    MessageBox.Show($"Wysłałeś zaproszenie do znajomych do {userNameText.Text}");
                     break;
                 case 2:
-                    MessageBox.Show($"Albo ty albo użytkownik {userNameText.Text} zablokował znajomość");
+                    MessageBox.Show($"Użytkownik {userNameText.Text} wysłał zaproszenie do znajomych");
                     break;
                 case 3:
-                    MessageBox.Show($"Jesteś znajomym z {userNameText.Text}");
+                    MessageBox.Show($"Zablokowałeś użytkownika {userNameText.Text}");
                     break;
                 case 4:
-                    MessageBox.Show($"Jakiś błąd?");
+                    MessageBox.Show($"Użytkownik {userNameText.Text} zablokował cię");
+                    break;
+                case 5:
+                    MessageBox.Show($"Jesteś znajomym użytkownika {userNameText.Text}");
+                    break;
+                case 6:
+                    MessageBox.Show("Inny błąd?");
                     break;
             }
         }
@@ -45,6 +51,20 @@ namespace WinFormsTest3
                 MessageBox.Show($"Dodano {userNameText.Text} do znajomych");
             else
                 MessageBox.Show($"Nie dodano {userNameText.Text} do znajomych");
+        }
+        private void blockFriendButton_Click(object sender, EventArgs e)
+        {
+            if (DBconnection.BlockFriend(userNameText.Text))
+                MessageBox.Show($"Zablokowano użytkownika {userNameText.Text}");
+            else
+                MessageBox.Show($"Nie zablokowano użytkownia {userNameText.Text}");
+        }
+        private void deleteFriendButton_Click(object sender, EventArgs e)
+        {
+            if (DBconnection.DeleteFriend(userNameText.Text))
+                MessageBox.Show($"Usunięto ze znajomych użytkownika {userNameText.Text}");
+            else
+                MessageBox.Show($"Nie usunięto ze znajomych użytkownika {userNameText.Text}");
         }
     }
 }

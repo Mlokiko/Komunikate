@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 using System.Windows.Forms;
 using Npgsql;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
@@ -164,7 +165,7 @@ namespace WinFormsTest3
                         var check_id = new NpgsqlCommand($"SELECT user_id FROM users WHERE username = '{userName}'", con);
                         using (NpgsqlDataReader reader = check_id.ExecuteReader())
                         {
-                            while (reader.Read())
+                            while (reader.Read())           // Nie mam pojęcia czemu w while to działa a poza nie... niech ktoś to sprawdzi, zastanawia mnie to
                             {
                                 userID = reader.GetInt32(0);
                             }
@@ -234,7 +235,14 @@ namespace WinFormsTest3
             return true;
         }
         /// <summary>
-        /// Funkcja zwraca 0 gdy nie jest sie znajomym, 1 gdy jest sie w fazie request, 2 gdy jest sie zablokowanym, 3 gdy jest sie znajomym, 4 gdy jest błąd?
+        /// Funkcja zwraca:
+        ///    0 gdy nie jest sie znajomym
+        ///    1 aktywny użytkownik wysłał zaproszenie do znajomych
+        ///    2 gdy ten drugi użytkownik wysłał zaproszenie
+        ///    3 aktywny użytkownik zablokował użytkownika
+        ///    4 gdy ten drugi użytkownik zablokował nas
+        ///    5 gdy jest się znajomymi
+        ///    6 gdy wystąpił inny błąd?
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
@@ -252,8 +260,8 @@ namespace WinFormsTest3
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
+                return 6;
             }
-            return 4;
         }
         public static bool AddFriend(string userName)
         {
@@ -263,8 +271,8 @@ namespace WinFormsTest3
                 int friend_id = NameToId(userName);
 
                 con.Open();
-                var cmd2 = new NpgsqlCommand($"DELETE FROM friends WHERE user_id = {DBconnection.user_id} AND friend_id = {friend_id}", con);
-                cmd2.ExecuteNonQuery();
+                var cmd = new NpgsqlCommand($"", con);
+                cmd.ExecuteNonQuery();
                 con.Close();
             }
             catch (Exception e)
@@ -276,12 +284,37 @@ namespace WinFormsTest3
         }
         public static bool BlockFriend(string userName)
         {
-
-            return true;
+            int id = NameToId(userName);
+            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
+            try
+            {
+                // UPDATE 0 - znależć sposób jak to wykorzystać
+                con.Open();
+                var cmd = new NpgsqlCommand($"UPDATE friends SET status = 'blocked' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
         }
         public static bool DeleteFriend(string userName)
         {
-            return true;
+            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
+            try
+            {
+                con.Open();
+                var cmd = new NpgsqlCommand($"", con);
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
         }
         /// <summary>
         /// Funkcja zwraca ID podanego w argumencie usera. Łączy się z bazą jako aktualny użytkownik aplikacji

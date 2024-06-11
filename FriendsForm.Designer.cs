@@ -34,17 +34,20 @@
             blockFriendButton = new Button();
             checkFriendStatusButton = new Button();
             userNameText = new TextBox();
-            infoLabel = new Label();
+            info1Label = new Label();
+            info2Label = new Label();
+            info3Label = new Label();
             SuspendLayout();
             // 
             // deleteFriendButton
             // 
-            deleteFriendButton.Location = new Point(482, 328);
+            deleteFriendButton.Location = new Point(482, 358);
             deleteFriendButton.Name = "deleteFriendButton";
             deleteFriendButton.Size = new Size(136, 23);
             deleteFriendButton.TabIndex = 7;
             deleteFriendButton.Text = "Usuń znajomego";
             deleteFriendButton.UseVisualStyleBackColor = true;
+            deleteFriendButton.Click += deleteFriendButton_Click;
             // 
             // userNameLabel
             // 
@@ -67,12 +70,13 @@
             // 
             // blockFriendButton
             // 
-            blockFriendButton.Location = new Point(482, 299);
+            blockFriendButton.Location = new Point(482, 329);
             blockFriendButton.Name = "blockFriendButton";
             blockFriendButton.Size = new Size(136, 23);
             blockFriendButton.TabIndex = 6;
             blockFriendButton.Text = "Zablokuj znajomego";
             blockFriendButton.UseVisualStyleBackColor = true;
+            blockFriendButton.Click += blockFriendButton_Click;
             // 
             // checkFriendStatusButton
             // 
@@ -91,21 +95,41 @@
             userNameText.Size = new Size(136, 23);
             userNameText.TabIndex = 2;
             // 
-            // infoLabel
+            // info1Label
             // 
-            infoLabel.AutoSize = true;
-            infoLabel.Location = new Point(482, 216);
-            infoLabel.Name = "infoLabel";
-            infoLabel.Size = new Size(151, 15);
-            infoLabel.TabIndex = 3;
-            infoLabel.Text = "Wielkość liter ma znaczenie";
+            info1Label.AutoSize = true;
+            info1Label.Location = new Point(482, 216);
+            info1Label.Name = "info1Label";
+            info1Label.Size = new Size(151, 15);
+            info1Label.TabIndex = 3;
+            info1Label.Text = "Wielkość liter ma znaczenie";
+            // 
+            // info2Label
+            // 
+            info2Label.AutoSize = true;
+            info2Label.Location = new Point(463, 296);
+            info2Label.Name = "info2Label";
+            info2Label.Size = new Size(186, 15);
+            info2Label.TabIndex = 8;
+            info2Label.Text = "Wysyła zaproszenie do znajomych";
+            // 
+            // info3Label
+            // 
+            info3Label.AutoSize = true;
+            info3Label.Location = new Point(386, 311);
+            info3Label.Name = "info3Label";
+            info3Label.Size = new Size(354, 15);
+            info3Label.TabIndex = 9;
+            info3Label.Text = "Gdy użytkownik i do nas wysłał zaproszenie, dodaje do znajomych";
             // 
             // FriendsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 541);
-            Controls.Add(infoLabel);
+            Controls.Add(info3Label);
+            Controls.Add(info2Label);
+            Controls.Add(info1Label);
             Controls.Add(userNameText);
             Controls.Add(checkFriendStatusButton);
             Controls.Add(blockFriendButton);
@@ -126,6 +150,8 @@
         private Button blockFriendButton;
         private Button checkFriendStatusButton;
         private TextBox userNameText;
-        private Label infoLabel;
+        private Label info1Label;
+        private Label info2Label;
+        private Label info3Label;
     }
 }

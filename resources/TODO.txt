@@ -1,5 +1,11 @@
 PILNE
 
+- dodaæ view dla userów pozwalaj¹c patrzeæ na swoje znajomoœci - pozwoli to im na ich modyfikacje
+
+- Do sprawdzenia, i to tak porz¹dnie, znajomoœci
+
+- dodaæ trigger, sprawdzajacy czy wysylajacy nie jest aby zablokowany/niedodany do znaj? gubie sie, jest 3:00 w nocy xD
+
 - u¿ytkownik/rola createuser ma superadmina - trzeba sprawdziæ jakie dok³adnie specyficznie prawa trzeba mu nadaæ, aby by³ w stanie tworzyæ userów
 
 - FRIENDS - Aktualnie sprawdzane jest czy którykolwiek z userów ma status znajomego/zablokowanego, je¿eli tak to obydwoje maj¹ ten status. request friend nie dziala/robi nic
