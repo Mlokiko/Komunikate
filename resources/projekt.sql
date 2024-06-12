@@ -117,6 +117,15 @@ END IF;
 RETURN 5;
 END $$;
 
+-- CREATE OR REPLACE FUNCTION block_user(v_sender_id INTEGER, v_receiver VARCHAR) RETURNS INTEGER LANGUAGE PLPGSQL SECURITY DEFINER AS $$
+-- DECLARE
+-- v_receiver_id INTEGER;
+-- v_your_status VARCHAR;
+-- v_his_status VARCHAR;
+-- BEGIN
+
+-- END $$;
+
 -- Trigger sprawdzający czy użytkownicy są znajomymi
 -- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość, jest zrobione po stronie aplikacji
 

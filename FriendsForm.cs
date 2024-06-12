@@ -59,20 +59,19 @@ namespace WinFormsTest3
             else
                 MessageBox.Show($"Nie zablokowano użytkownia {userNameText.Text}");
         }
-        private void deleteFriendButton_Click(object sender, EventArgs e)
-        {
-            if (DBconnection.DeleteFriend(userNameText.Text))
-                MessageBox.Show($"Usunięto ze znajomych użytkownika {userNameText.Text}");
-            else
-                MessageBox.Show($"Nie usunięto ze znajomych użytkownika {userNameText.Text}");
-        }
-
         private void unBlockFriendButton_Click(object sender, EventArgs e)
         {
             if (DBconnection.UnBlockFriend(userNameText.Text))
                 MessageBox.Show($"Odblokowano użytkownika {userNameText.Text}");
             else
                 MessageBox.Show($"Nie odblokowano użytkownika {userNameText.Text}");
+        }
+        private void deleteFriendButton_Click(object sender, EventArgs e)
+        {
+            if (DBconnection.DeleteFriend(userNameText.Text))
+                MessageBox.Show($"Usunięto ze znajomych użytkownika {userNameText.Text}");
+            else
+                MessageBox.Show($"Nie usunięto ze znajomych użytkownika {userNameText.Text}");
         }
     }
 }

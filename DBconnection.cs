@@ -275,7 +275,7 @@ namespace WinFormsTest3
                 return 6;
             }
         }
-        public static bool AddFriend(string userName)
+        public static bool AddFriend(string userName) 
         {
             string v_your_status = "";
             string v_his_status = "";
@@ -303,7 +303,22 @@ namespace WinFormsTest3
                         v_his_status = reader.GetString(0);
                     }
                 }
-                if (v_your_status == "requested" &&  v_his_status == "")
+                if (v_your_status == "blocked" && v_his_status == "blocked")
+                {
+                    MessageBox.Show($"Obydwoje się zablokowaliście");
+                    return false;
+                }
+                else if (v_his_status == "blocked")
+                {
+                    MessageBox.Show($"Użytkownik {userName} zablokował cię");
+                    return false;
+                }
+                else if (v_your_status == "blocked")
+                {
+                    MessageBox.Show($"Najpierw odblokuj użytkownika {userName}");
+                    return false;
+                }
+                else if (v_your_status == "requested" &&  v_his_status == "")
                 {
                     MessageBox.Show($"Już wysłałeś użytkownikowi {userName} zaproszenie");
                     return false;
@@ -332,21 +347,6 @@ namespace WinFormsTest3
                     MessageBox.Show("Już jesteście znajomymi");
                     return false;
                 }
-                else if (v_your_status == "blocked" && v_his_status == "blocked")
-                {
-                    MessageBox.Show($"Obydwoje się zablokowaliście");
-                    return false;
-                }
-                else if (v_his_status == "blocked")
-                {
-                    MessageBox.Show($"Użytkownik {userName} zablokował cię");
-                    return false;
-                }
-                else if (v_your_status == "blocked")
-                {
-                    MessageBox.Show($"Najpierw odblokuj użytkownika {userName}");
-                    return false;
-                }
             }
             catch (Exception e)
             { 
@@ -361,11 +361,32 @@ namespace WinFormsTest3
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
+                bool relationExists = false;
+                var checkRelation = new NpgsqlCommand($"SELECT EXISTS(SELECT 1 FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {DBconnection.user_id} AND friend_id = {NameToId(userName)})", con);
+                var updateRelation = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = 'blocked' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
+               
                 con.Open();
-                var cmd = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = 'blocked' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
-                // skąd użytkownik będzie wiedzieć że nie zablokowano usera bo np. nie ma takiej krotki do aktualizacji? program przejdzie dalej i wyswietli ze poprawnie zablokowano
-                cmd.ExecuteNonQuery();
-                return true;
+                using (NpgsqlDataReader reader = checkRelation.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        relationExists = reader.GetBoolean(0);
+                    }
+                }
+                // czy potrzebny ten close?
+                con.Close();
+                if (relationExists)
+                {
+                    con.Open();
+                    updateRelation.ExecuteNonQuery();
+                    con.Close();
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show($"nie jesteś znajomym z użytkownikiem {userName}");
+                    return false;
+                }
             }
             catch (Exception e)
             {
@@ -379,10 +400,30 @@ namespace WinFormsTest3
             var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
             try
             {
+                bool relationExists = false;
+                var checkRelation = new NpgsqlCommand($"SELECT EXISTS(SELECT 1 FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {DBconnection.user_id} AND friend_id = {NameToId(userName)})", con);
+                var cmd = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = 'accepted' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
+
                 con.Open();
-                var cmd = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = '' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
-                cmd.ExecuteNonQuery();
-                return true;
+                using (NpgsqlDataReader reader = checkRelation.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        relationExists = reader.GetBoolean(0);
+                    }
+                }
+                con.Close();
+                if (relationExists)
+                {
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception e)
             {

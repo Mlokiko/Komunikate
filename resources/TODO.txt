@@ -61,6 +61,11 @@ JAK SIE UDA
   - Delete account
   
   
+  ------ INFORMACJE O PROGRAMIE
+  
+  
+  - nie mo¿na zablokowaæ u¿ytkownika jeœli nie mieliœmy z nim ¿adnych interakcji - request od niego lub od nas, lub nie byliœmy poprzednio przyjació³mi
+  - po zablokowaniu trzeba ponownie dodaæ do znajomych
   
   
   
