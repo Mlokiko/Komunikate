@@ -1,12 +1,14 @@
 PILNE ----------------------------------------------------------------------------------------------------------------
 
+- do poprawy block unblock (funkcje w DBconnection)
+
 - procedury a funkcje - uzylem w postgresie tylko funkcji, trzeba zbadaæ gdzie mo¿na by skorzystaæ z procedur
 
-- zamieniæ ca³e "register" na procedure w bazie danych
+- Dodaæ indexy, nwm gdzie, ale trzeba dla "kompletnoœci" bo to w koñcu projekt z sql'a
+
+- zamieniæ ca³e "register" na procedure w bazie danych?
 
 - Dodaæ odblokowanie znajomego
-
-- Dodaæ indexy, nwm gdzie, ale trzeba dla "kompletnoœci" bo to w koñcu projekt z sql'a
 
 - u¿ytkownik/rola createuser ma superadmina - trzeba sprawdziæ jakie dok³adnie specyficznie prawa trzeba mu nadaæ, aby by³ w stanie tworzyæ userów
 

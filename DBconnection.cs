@@ -363,6 +363,24 @@ namespace WinFormsTest3
             {
                 con.Open();
                 var cmd = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = 'blocked' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
+                // skąd użytkownik będzie wiedzieć że nie zablokowano usera bo np. nie ma takiej krotki do aktualizacji? program przejdzie dalej i wyswietli ze poprawnie zablokowano
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
+        }
+        public static bool UnBlockFriend(string userName)
+        {
+            int id = NameToId(userName);
+            var con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
+            try
+            {
+                con.Open();
+                var cmd = new NpgsqlCommand($"UPDATE view_{DBconnection.user_name}_read_friends SET status = '' WHERE user_id = {DBconnection.user_id} AND friend_id = {id}", con);
                 cmd.ExecuteNonQuery();
                 return true;
             }

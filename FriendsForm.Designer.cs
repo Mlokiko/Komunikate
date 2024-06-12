@@ -37,14 +37,15 @@
             info1Label = new Label();
             info2Label = new Label();
             info3Label = new Label();
+            unBlockFriendButton = new Button();
             SuspendLayout();
             // 
             // deleteFriendButton
             // 
-            deleteFriendButton.Location = new Point(482, 358);
+            deleteFriendButton.Location = new Point(482, 387);
             deleteFriendButton.Name = "deleteFriendButton";
             deleteFriendButton.Size = new Size(136, 23);
-            deleteFriendButton.TabIndex = 7;
+            deleteFriendButton.TabIndex = 10;
             deleteFriendButton.Text = "Usuń znajomego";
             deleteFriendButton.UseVisualStyleBackColor = true;
             deleteFriendButton.Click += deleteFriendButton_Click;
@@ -73,7 +74,7 @@
             blockFriendButton.Location = new Point(482, 329);
             blockFriendButton.Name = "blockFriendButton";
             blockFriendButton.Size = new Size(136, 23);
-            blockFriendButton.TabIndex = 6;
+            blockFriendButton.TabIndex = 8;
             blockFriendButton.Text = "Zablokuj znajomego";
             blockFriendButton.UseVisualStyleBackColor = true;
             blockFriendButton.Click += blockFriendButton_Click;
@@ -110,7 +111,7 @@
             info2Label.Location = new Point(463, 296);
             info2Label.Name = "info2Label";
             info2Label.Size = new Size(186, 15);
-            info2Label.TabIndex = 8;
+            info2Label.TabIndex = 6;
             info2Label.Text = "Wysyła zaproszenie do znajomych";
             // 
             // info3Label
@@ -119,14 +120,25 @@
             info3Label.Location = new Point(386, 311);
             info3Label.Name = "info3Label";
             info3Label.Size = new Size(354, 15);
-            info3Label.TabIndex = 9;
+            info3Label.TabIndex = 7;
             info3Label.Text = "Gdy użytkownik i do nas wysłał zaproszenie, dodaje do znajomych";
+            // 
+            // unBlockFriendButton
+            // 
+            unBlockFriendButton.Location = new Point(482, 358);
+            unBlockFriendButton.Name = "unBlockFriendButton";
+            unBlockFriendButton.Size = new Size(136, 23);
+            unBlockFriendButton.TabIndex = 9;
+            unBlockFriendButton.Text = "Odblokuj znajomego";
+            unBlockFriendButton.UseVisualStyleBackColor = true;
+            unBlockFriendButton.Click += unBlockFriendButton_Click;
             // 
             // FriendsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 541);
+            Controls.Add(unBlockFriendButton);
             Controls.Add(info3Label);
             Controls.Add(info2Label);
             Controls.Add(info1Label);
@@ -153,5 +165,6 @@
         private Label info1Label;
         private Label info2Label;
         private Label info3Label;
+        private Button unBlockFriendButton;
     }
 }

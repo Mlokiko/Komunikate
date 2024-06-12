@@ -185,7 +185,7 @@ CREATE VIEW view_Andrju_read_friends AS					-- Pozwala użytkownikowi na odczyty
 SELECT * FROM friends
 WHERE user_id = 1 OR friend_id = 1;
 GRANT ALL PRIVILEGES ON view_Andrju_read_friends TO Andrju;
-GRANT SELECT ON view_Andrju_list_messages TO Andrju;
+GRANT SELECT ON view_Andrju_list_messages TO Andrju;			-- zamienic na all privileges i sprawdzić w kodzie gdzie potrzebne beda zmiany - na pewno sama grupa user_group nie potrzebuje uprawnienia insert na messages
 GRANT SELECT ON View_Andrju_read_users TO Andrju;
 ALTER GROUP user_group ADD USER Andrju;					-- Dodaje użytkownika do grupy pozwalającej pisać wiadomości
 

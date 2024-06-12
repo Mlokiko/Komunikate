@@ -66,5 +66,13 @@ namespace WinFormsTest3
             else
                 MessageBox.Show($"Nie usunięto ze znajomych użytkownika {userNameText.Text}");
         }
+
+        private void unBlockFriendButton_Click(object sender, EventArgs e)
+        {
+            if (DBconnection.UnBlockFriend(userNameText.Text))
+                MessageBox.Show($"Odblokowano użytkownika {userNameText.Text}");
+            else
+                MessageBox.Show($"Nie odblokowano użytkownika {userNameText.Text}");
+        }
     }
 }
