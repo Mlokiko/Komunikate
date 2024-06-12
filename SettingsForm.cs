@@ -21,10 +21,7 @@ namespace WinFormsTest3
         {
             if (DBconnection.CheckConnectionToDB(ipText.Text, portText.Text, databaseText.Text))
             {
-                // Do ogarnięcia ustawianie statusu w UI programu
-                //Application.OpenForms.OfType<MainForm>().FirstOrDefault().statusText.Text = $"Połączono z {databaseText.Text}";
-                // W jakiś magiczny sposób, linijka na dole pozwala na przekazywanie kontrolek pomiedzy formularzami.
-                //Application.OpenForms.OfType<MainForm>().FirstOrDefault().OpenChildForm(new LogInForm());
+                Application.OpenForms.OfType<MainForm>().FirstOrDefault().statusText.Text = $"Połączono z {databaseText.Text}";
             }
         }
 

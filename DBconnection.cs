@@ -91,12 +91,11 @@ namespace WinFormsTest3
             DataSet ds = new DataSet();
             try
             {
-                string connstring = String.Format($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
-                NpgsqlConnection conn = new NpgsqlConnection(connstring);
-                conn.Open();
-                NpgsqlDataAdapter da = new NpgsqlDataAdapter(selectSql, conn);
+                NpgsqlConnection con = new NpgsqlConnection($"Server={DBconnection.server};Port={DBconnection.port};Database={DBconnection.database};Username={DBconnection.user_name_lower};Password={DBconnection.user_password}");
+                con.Open();
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(selectSql, con);
                 da.Fill(ds);
-                conn.Close();
+                con.Close();
                 return ds.Tables[0];
             }
             catch (Exception ex)
@@ -287,7 +286,6 @@ namespace WinFormsTest3
                 var his_status = new NpgsqlCommand($"SELECT status FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {friend_id} AND friend_id = {DBconnection.user_id}", con);
 
                 con.Open();
-                
 
                 using (NpgsqlDataReader reader = your_status.ExecuteReader())
                 {
@@ -472,6 +470,8 @@ namespace WinFormsTest3
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
+        
+        // Funkcja pomocnicza
         public static int NameToId(string userName)
         {
             int zmienna = 0;
