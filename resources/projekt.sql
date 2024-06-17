@@ -1,5 +1,5 @@
 -- database postgres, port 5432, dla poprawnego domyślnego działania aplikacji
--- w projekcie nie użyto żadnych transakcji - nie ma sensownego zastosowania dla nich
+-- w projekcie nie użyto żadnych indeksów - nie ma sensownego zastosowania dla nich 
 
 CREATE TABLE users (
 	user_id SERIAL PRIMARY KEY NOT NULL,
@@ -41,21 +41,10 @@ CREATE USER testconnection PASSWORD 'testConnection';
 -- Specjalny user w bazie danych, który usuwa użytkowników
 
 CREATE USER userdeleater PASSWORD 'userDeleater' SUPERUSER;
---GRANT USAGE ON SCHEMA public TO userdeleater;
---GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO userdeleater;
---GRANT DELETE ON ALL TABLES IN SCHEMA public TO userdeleater;
---GRANT DROP ON SCHEMA public TO userdeleater;
 
 -- Specjalny user który będzie logować się do bazy danych i tworzyć nowych użytkowników
--- Jeżeli schema jest inna niż public, trzeba zmodyfikować poniższe granty
--- CREATEROLE pozwala tworzyć role (użytkowników bazy danych)
 
-CREATE USER usercreator PASSWORD 'userCreator' SUPERUSER;			-- zamiast SUPERUSER CREATEROLE
--- Ogólnie to poddaje się, nie wiem jak pozwolić mu dodawać do grup bez nadawania mu superusera
--- GRANT USAGE, CREATE ON SCHEMA public TO usercreator;
--- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO usercreator;  -- sequences, czyli specjalne tabele tworzone gdy używa się np. serial (autonumeracji)
--- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO usercreator;
-
+CREATE USER usercreator PASSWORD 'userCreator' SUPERUSER;
 
 
 CREATE OR REPLACE FUNCTION username_to_id(IN v_username varchar) RETURNS INTEGER AS $$
@@ -117,14 +106,6 @@ END IF;
 RETURN 5;
 END $$;
 
--- CREATE OR REPLACE FUNCTION block_user(v_sender_id INTEGER, v_receiver VARCHAR) RETURNS INTEGER LANGUAGE PLPGSQL SECURITY DEFINER AS $$
--- DECLARE
--- v_receiver_id INTEGER;
--- v_your_status VARCHAR;
--- v_his_status VARCHAR;
--- BEGIN
-
--- END $$;
 
 -- Trigger sprawdzający czy użytkownicy są znajomymi
 -- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość, jest zrobione po stronie aplikacji
@@ -343,9 +324,7 @@ DELETE FROM users CASCADE;
 DROP TABLE users CASCADE;
 DELETE FROM messages CASCADE;
 DROP TABLE messages CASCADE;
--- DROP TRIGGER at_insert_message_check_is_friends on messages; -- Nie potrzeba usuwać tego triggera gdy kaskadowo usuwamy messages - jest usuwany przy usuwaniu messages
 DROP FUNCTION is_friend();
--- DROP TRIGGER at_insert_message_check_null on messages;  -- Tak samo jak wyżej
 DROP FUNCTION check_null();
 
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM testconnection;
@@ -375,93 +354,6 @@ DROP USER orion;
 DROP USER kapa;
 
 ------------------------------------------
--- Funkcje przed modyfikacją - aktualnie sprawdzają czy którykolwiek z userów jest znajomym/zablokowanym
-
-CREATE OR REPLACE FUNCTION username_to_id(IN v_username varchar) RETURNS INTEGER AS $$
-DECLARE
-v_id INTEGER;
-BEGIN
-
-SELECT user_id 
-INTO v_id
-FROM users
-WHERE username = v_username;
-
-IF NOT FOUND THEN
-	RAISE EXCEPTION 'Nie znaleziono id użytkownika o nazwie: (%)', v_username;
-END IF;
-
-RETURN v_id;
-END $$ LANGUAGE PLPGSQL SECURITY DEFINER;
-
--- Dałoby rade przekształcić funkcjse is_friend() na taką że współpracowałaby z triggerem i dałoby się ją normalnie wywołać, ale stworzyłem osobną funkcję
--- Funkcja zwraca 0 gdy nie jest sie znajomym, 1 gdy jest sie w fazie request, 2 gdy jest sie zablokowanym, 3 gdy jest sie znajomym
-
-CREATE OR REPLACE FUNCTION is_friend2(v_sender_id INTEGER, v_receiver VARCHAR) RETURNS INTEGER LANGUAGE PLPGSQL SECURITY DEFINER AS $$
-DECLARE
-v_receiver_id INTEGER;
-v_status VARCHAR;
-v_status_2 VARCHAR;
-BEGIN
-
-v_receiver_id := username_to_id(v_receiver);
-
-SELECT status
-INTO v_status
-FROM friends
-WHERE user_id = v_sender_id AND friend_id = v_receiver_id;
-
-SELECT status
-INTO v_status_2
-FROM friends
-WHERE user_id = v_receiver_id AND friend_id = v_sender_id;
-
-IF(v_status IS NULL AND v_status_2 IS NULL) THEN
-RETURN 0;
-ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
-RETURN 1;
-ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
-RETURN 2;
-END IF;
-RETURN 3;
-END $$;
-
--- Trigger sprawdzający czy użytkownicy są znajomymi
--- Sprawdzanie czy użytkownik aplikacji jest użytkownikiem w bazie, który wysyła wiadomość, jest zrobione po stronie aplikacji
-
-CREATE OR REPLACE FUNCTION is_friend() RETURNS trigger AS $$
-DECLARE
-v_status varchar;
-v_status_2 varchar;
-BEGIN
-
-SELECT status
-INTO v_status
-FROM friends
-WHERE user_id = NEW.sender_id AND friend_id = NEW.receiver_id;
-
-SELECT status
-INTO v_status_2
-FROM friends
-WHERE user_id = NEW.receiver_id AND friend_id = NEW.sender_id;
-
-IF(v_status IS NULL AND v_status_2 IS NULL)  THEN
-RAISE EXCEPTION 'Nie jesteś znajomym użytkownika';
-ELSEIF(v_status = 'requested' OR v_status_2 = 'requested') THEN
-RAISE EXCEPTION 'Użytkownik nie dodał cię jeszcze do znajomych';
-ELSEIF(v_status = 'blocked' OR v_status_2 = 'blocked') THEN
-RAISE EXCEPTION 'Użytkownik zablokował cię (lub ty go)';
-END IF;
-RETURN NEW;
-END;
-$$ LANGUAGE PLPGSQL SECURITY DEFINER;			-- SECURITY DEFINER pozwala na wykonanie funkcji z prawami właściciela funkcji (superuser tworzący bazę danych), a nie użytkownika używającego funkcji.
-------------------------------------------
-
--- dobra, wiadomość dla mnie, userzy w postgresie ZAWSZE są z małej litery...
-
--- te uprawnienia na dole są potrzebne żeby można było wysyłać wiadomości
--- GRANT INSERT ON messages TO {user}; ORAZ
--- GRANT UPDATE ON messages_message_id_seq to {user};
 
 -- -- Proces tworzenia usera w bazie danych i aplikacji.
 -- -- Nazwę usera zapisujemy do zmiennej {username} w C#, tak samo hasło i potem tym zapytaniem przekazujemy do DBMS.
@@ -486,10 +378,3 @@ $$ LANGUAGE PLPGSQL SECURITY DEFINER;			-- SECURITY DEFINER pozwala na wykonanie
 
 -- GRANT SELECT ON View_{username}_list_messages TO {username};
 -- GRANT SELECT ON View_{username}_read_users TO {username};
-
-
---------------------------------------- Kiedyś do zrobienia
--- CREATE TABLE groups(
--- 	id SERIAL,
--- 	group_name TEXT,
--- 	group_users INTEGER);

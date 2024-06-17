@@ -20,7 +20,7 @@ namespace WinFormsTest3
         public static int user_id;
         public static string user_name = "";
         public static string user_name_lower = "";
-        public static string user_password = ""; // Nwm czy to dobry pomysł tutaj to przechowywać... gdyby chociaż było zahaszowane
+        public static string user_password = "";
         public static string server = "127.0.0.1";
         public static string port = "5432";
         public static string database = "postgres";
@@ -71,8 +71,6 @@ namespace WinFormsTest3
             }
             catch (Exception ex)
             {
-                // To można by jakoś zmienić, żeby tą biblioteke dało się używać z innym frameworkiem UI (konsola, WPF, MAUI, cos webowego) bez zmian w kodzie
-                // (chyba) Najlepiej by było zwracać wartości liczbowe typu 1 - ok, 2 - error, 3 - inny error i obsługiwać je w kodzie programu, a nie tutaj
                 DBconnection.user_name = "";
                 DBconnection.user_name_lower = "";
                 DBconnection.user_password = "";
@@ -81,13 +79,12 @@ namespace WinFormsTest3
             return false;
         }
         /// <summary>
-        /// Funkcja pobierająca dane z DB - do ogarnięcia żeby lepiej działała (tzn, formatowanie)
+        /// Funkcja pobierająca dane z DB
         /// </summary>
         /// <param name="selectSql"></param>
         /// <returns></returns>
         public static DataTable GetData(string selectSql)
         {
-            //https://stackoverflow.com/questions/60670411/add-postgresql-databaseas-data-source-for-winforms-datagridview
             DataSet ds = new DataSet();
             try
             {
@@ -166,7 +163,7 @@ namespace WinFormsTest3
                         var check_id = new NpgsqlCommand($"SELECT user_id FROM users WHERE username = '{userName}'", con);
                         using (NpgsqlDataReader reader = check_id.ExecuteReader())
                         {
-                            while (reader.Read())           // Nie mam pojęcia czemu w while to działa a poza nie... niech ktoś to sprawdzi, zastanawia mnie to
+                            while (reader.Read())
                             {
                                 userID = reader.GetInt32(0);
                             }
@@ -371,7 +368,6 @@ namespace WinFormsTest3
                         relationExists = reader.GetBoolean(0);
                     }
                 }
-                // czy potrzebny ten close?
                 con.Close();
                 if (relationExists)
                 {
@@ -419,9 +415,7 @@ namespace WinFormsTest3
                     return true;
                 }
                 else
-                {
                     return false;
-                }
             }
             catch (Exception e)
             {
@@ -435,7 +429,6 @@ namespace WinFormsTest3
             try
             {
                 bool friend = false;
-                // SPRAWDZIC CZY NA PEWNO DZIAŁA, CZY ZWRACA PRAWIDŁOWĄ WARTOŚĆ
                 var checkIsFriend = new NpgsqlCommand($"SELECT EXISTS(SELECT 1 FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {DBconnection.user_id} AND friend_id = {NameToId(userName)}) UNION SELECT EXISTS(SELECT 1 FROM view_{DBconnection.user_name_lower}_read_friends WHERE user_id = {NameToId(userName)} AND friend_id = {DBconnection.user_id})", con);
 
                 con.Open();

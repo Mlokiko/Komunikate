@@ -38,15 +38,8 @@ namespace WinFormsTest3
             //FriendsBox.DataSource = DBconnection.GetData($"SELECT DISTINCT username FROM View_{DBconnection.user_name}_read_users NATURAL JOIN View_{DBconnection.user_name}_read_friends where status='accepted';");
         }
 
-        private void usersDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
 
-        }
 
-        private void messagesdDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -75,8 +68,6 @@ namespace WinFormsTest3
                 MessageBox.Show("Taki użytkownik nie istnieje lub nie masz takiego znajomego");
             else
                 messagesdDataGridView.DataSource = DBconnection.GetData($"SELECT message_date AS \"Data wysłania\", message_text_content AS \"Wiadomość\" FROM View_{DBconnection.user_name}_list_messages vlm JOIN View_{DBconnection.user_name}_read_users vu ON (vlm.sender_id=vu.user_id OR vlm.receiver_id=vu.user_id) WHERE vu.username='{friendName}' ORDER BY message_date ASC;");
-
-            //messagesdDataGridView.DataSource = DBconnection.GetData($"SELECT message_text_content, message_date, sender_id, receiver_id FROM View_{DBconnection.user_name_lower}_list_messages WHERE sender_id=(SELECT user_id FROM View_{DBconnection.user_name_lower}_read_users WHERE username={friendName}) OR receiver_id=(SELECT user_id FROM View_{DBconnection.user_name_lower}_read_users WHERE username={friendName})");
         }
     }
 }
