@@ -63,6 +63,9 @@ JAK SIE UDA
   - nie mo¿na zablokowaæ u¿ytkownika jeœli nie mieliœmy z nim ¿adnych interakcji - request od niego lub od nas, lub nie byliœmy poprzednio przyjació³mi
   - po zablokowaniu trzeba ponownie dodaæ do znajomych
   
+  
+https://learn.microsoft.com/en-us/dotnet/core/deploying/single-file/overview?tabs=vs
+
 dodawane w .csproj
   <SelfContained>true</SelfContained>     -- program zapisywany jest do osobnego folderu zawieraj¹cego teoretycznie wszystkie potrzebne rzeczy do jego uruchumienia - rezultatem jest jednak wa¿¹cy 160mb folder
   <PublishSingleFile>true</PublishSingleFile> - nic nie zmienia w kontekscie tego projektu
