@@ -38,9 +38,6 @@ namespace WinFormsTest3
             //FriendsBox.DataSource = DBconnection.GetData($"SELECT DISTINCT username FROM View_{DBconnection.user_name}_read_users NATURAL JOIN View_{DBconnection.user_name}_read_friends where status='accepted';");
         }
 
-
-
-
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             //usersDataGridView.DataSource = DBconnection.GetData($"SELECT username FROM View_{DBconnection.user_name}_read_users NATURAL JOIN View_{DBconnection.user_name}_read_friends where status='accepted';");
